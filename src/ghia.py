@@ -1,6 +1,7 @@
 import click
 import requests
 import configparser
+import re
 
 @click.command()
 @click.option('-s', '--strategy', type=click.Choice(['append', 'set', 'change'], case_sensitive=False), default='append', help='How to handle assignment collisions.', show_default=True)
@@ -11,17 +12,43 @@ import configparser
 def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 	"""CLI tool for automatic issue assigning of GitHub issues"""
 	
-	"Get configuration"
-	authConfig = configparser.ConfigParser()
-	authConfig.read_file(config_auth)
+	# Get configuration
+	dataAuth = configparser.ConfigParser()
+	dataAuth.read_file(config_auth)
 	
-	ruleConfig = configparser.ConfigParser()
-	ruleConfig.read_file(config_rules)
+	dataRules = configparser.ConfigParser()
+	dataRules.read_file(config_rules)
 
-	testConfig = f'{authConfig["github"]["token"]}, {ruleConfig}'
-	testConfig = click.style(testConfig, fg='green', bg='black')
-	click.echo(testConfig)
-	print(f'{strategy}, {dry_run}, {reposlug}')
+	# Load issues
+	session = requests.Session()
+	session.headers = {
+		'User-Agent': 'Python',
+		'Authorization': f'token {dataAuth["github"]["token"]}'
+		}
+	session.params = {
+		'per_page': 50,
+		'page': 1
+	}
+
+	while True:
+		r = session.get(f'https://api.github.com/repos/{reposlug}/issues')
+		issues = r.json()
+
+		if len(issues) <= 0:
+			# No more issues exist
+			break
+		
+		# Check current issues
+		for issue in issues:
+			print(issue)
+
+		# Next page
+		session.params['page'] += 1
+
+
+	# testConfig = f'{len(issues)}'
+	# testConfig = click.style(testConfig, fg='red', bg='black')
+	# click.echo(testConfig)
 	
 # Toto bude použito při zavolání z CLI
 if __name__ == '__main__':
