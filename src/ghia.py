@@ -19,7 +19,7 @@ def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 	ruleConfig.read_file(config_rules)
 
 	testConfig = f'{authConfig["github"]["token"]}, {ruleConfig}'
-	click.style(testConfig, fg='green', bg='black')
+	testConfig = click.style(testConfig, fg='green', bg='black')
 	click.echo(testConfig)
 	print(f'{strategy}, {dry_run}, {reposlug}')
 	
