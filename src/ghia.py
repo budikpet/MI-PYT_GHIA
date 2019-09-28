@@ -3,6 +3,39 @@ import requests
 import re
 from configData import ConfigData
 
+# Matches patterns to data in appropriate locations
+def issueMatches(issue, location, pattern):
+	if location == "title" or location == "any":
+		return bool(re.search(pattern, issue["title"], re.IGNORECASE))
+	
+	if location == "text" or location == "any":
+		return bool(re.search(pattern, issue["body"], re.IGNORECASE))
+	
+	if location == "label" or location == "any":
+		for label in issue["labels"]:
+			if bool(re.search(pattern, label["name"], re.IGNORECASE)):
+				return True
+		
+		return False
+
+
+# Checks current issue against all patterns
+# Returns: ([addedUsers], [removedUsers], [leftUsers])
+def check(issue, strategy, configData):
+	alreadyAssignedUsers = list(map(lambda assignee: assignee["login"], issue["assignees"]))
+	usersToAssign = set()
+	
+	# Match patterns to find users that should be assigned
+	for (location, pairs) in configData.userPatterns.items():
+		for (pattern, username) in pairs:
+			if issueMatches(issue, location, pattern):
+				# Current user should be added to the issue
+				usersToAssign.add(username)
+
+	print(f"{len(alreadyAssignedUsers)} : {len(usersToAssign)}")
+	print
+				
+
 @click.command()
 @click.option('-s', '--strategy', type=click.Choice(['append', 'set', 'change'], case_sensitive=False), default='append', help='How to handle assignment collisions.', show_default=True)
 @click.option('-d', '--dry-run', is_flag=True, help='Run without making any changes.')
@@ -26,6 +59,9 @@ def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 		'page': 1
 	}
 
+	if strategy == 'set':
+		session.params['assignee'] = 'none'
+
 	while True:
 		r = session.get(f'https://api.github.com/repos/{reposlug}/issues')
 		issues = r.json()
@@ -36,8 +72,9 @@ def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 		
 		# Check all received issues
 		for issue in issues:
-			print(issue)
-
+			# Check current issue against all patterns in all locations
+			check(issue, strategy, configData)
+					
 		# Next page
 		session.params['page'] += 1
 
