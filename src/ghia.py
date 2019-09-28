@@ -1,7 +1,7 @@
 import click
 import requests
-import configparser
 import re
+from configData import ConfigData
 
 @click.command()
 @click.option('-s', '--strategy', type=click.Choice(['append', 'set', 'change'], case_sensitive=False), default='append', help='How to handle assignment collisions.', show_default=True)
@@ -13,17 +13,13 @@ def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 	"""CLI tool for automatic issue assigning of GitHub issues"""
 	
 	# Get configuration
-	dataAuth = configparser.ConfigParser()
-	dataAuth.read_file(config_auth)
-	
-	dataRules = configparser.ConfigParser()
-	dataRules.read_file(config_rules)
+	configData = ConfigData(config_auth, config_rules)
 
 	# Load issues
 	session = requests.Session()
 	session.headers = {
 		'User-Agent': 'Python',
-		'Authorization': f'token {dataAuth["github"]["token"]}'
+		'Authorization': f'token {configData.token}'
 		}
 	session.params = {
 		'per_page': 50,
@@ -38,14 +34,14 @@ def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 			# No more issues exist
 			break
 		
-		# Check current issues
+		# Check all received issues
 		for issue in issues:
 			print(issue)
 
 		# Next page
 		session.params['page'] += 1
 
-
+	session.close()
 	# testConfig = f'{len(issues)}'
 	# testConfig = click.style(testConfig, fg='red', bg='black')
 	# click.echo(testConfig)
