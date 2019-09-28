@@ -3,8 +3,22 @@ import requests
 import re
 from configData import ConfigData
 
-def writeOutput(issue, configData, addedUsers, removedUsers, leftUsers):
-	print(f"#{issue['number']}: {addedUsers}, {removedUsers}, {leftUsers}")
+def writeOutput(issue, configData, reposlug, addedUsers, removedUsers, leftUsers):
+	symbol = lambda currSymbol, color: click.style(currSymbol, bold=True, fg=color)
+	info = click.style(f'{reposlug}#{issue["number"]}', bold=True)
+	click.echo(f'-> {info} ({issue["html_url"]})')
+	
+	for user in addedUsers:
+		click.echo(f'{symbol("+", "green")} {user}')
+
+	for user in removedUsers:
+		click.echo(f'{symbol("-", "red")} {user}')
+
+	for user in leftUsers:
+		click.echo(f'{symbol("=", "blue")} {user}')
+	
+	print
+	# print(f"#{issue['number']}: {addedUsers}, {removedUsers}, {leftUsers}")
 
 # Matches patterns to data in appropriate locations
 def patternMatches(issue, location, pattern):
@@ -86,7 +100,7 @@ def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 			# Check current issue against all patterns in all locations
 			addedUsers, removedUsers, leftUsers = check(issue, strategy, configData)
 			# Append 13, 17, 46
-			writeOutput(issue, configData, addedUsers, removedUsers, leftUsers)
+			writeOutput(issue, configData, reposlug, addedUsers, removedUsers, leftUsers)
 					
 		# Next page
 		session.params['page'] += 1
