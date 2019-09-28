@@ -3,8 +3,11 @@ import requests
 import re
 from configData import ConfigData
 
+def writeOutput(issue, configData, addedUsers, removedUsers, leftUsers):
+	print(f"#{issue['number']}: {addedUsers}, {removedUsers}, {leftUsers}")
+
 # Matches patterns to data in appropriate locations
-def issueMatches(issue, location, pattern):
+def patternMatches(issue, location, pattern):
 	if location == "title" or location == "any":
 		return bool(re.search(pattern, issue["title"], re.IGNORECASE))
 	
@@ -20,20 +23,28 @@ def issueMatches(issue, location, pattern):
 
 
 # Checks current issue against all patterns
-# Returns: ([addedUsers], [removedUsers], [leftUsers])
+# Returns triplet of sets: ({addedUsers}, {removedUsers}, {leftUsers})
 def check(issue, strategy, configData):
-	alreadyAssignedUsers = list(map(lambda assignee: assignee["login"], issue["assignees"]))
+	alreadyAssignedUsers = set(map(lambda assignee: assignee["login"], issue["assignees"]))
 	usersToAssign = set()
 	
-	# Match patterns to find users that should be assigned
+	# Find users that should be assigned
 	for (location, pairs) in configData.userPatterns.items():
 		for (pattern, username) in pairs:
-			if issueMatches(issue, location, pattern):
+			if patternMatches(issue, location, pattern):
 				# Current user should be added to the issue
 				usersToAssign.add(username)
 
-	print(f"{len(alreadyAssignedUsers)} : {len(usersToAssign)}")
-	print
+	if strategy == "append":
+		return (usersToAssign, set(), alreadyAssignedUsers)
+	elif strategy == "set":
+		return (usersToAssign, set(), alreadyAssignedUsers)
+	elif strategy == "change":
+		return (
+			usersToAssign.difference(alreadyAssignedUsers), 
+			alreadyAssignedUsers.difference(usersToAssign), 
+			alreadyAssignedUsers.intersection(usersToAssign)
+			)
 				
 
 @click.command()
@@ -73,7 +84,9 @@ def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 		# Check all received issues
 		for issue in issues:
 			# Check current issue against all patterns in all locations
-			check(issue, strategy, configData)
+			addedUsers, removedUsers, leftUsers = check(issue, strategy, configData)
+			# Append 13, 17, 46
+			writeOutput(issue, configData, addedUsers, removedUsers, leftUsers)
 					
 		# Next page
 		session.params['page'] += 1
