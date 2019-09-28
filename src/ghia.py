@@ -1,21 +1,21 @@
 import click
 import requests
 import re
+from enum import Enum
 from configData import ConfigData
 
-def writeOutput(issue, configData, reposlug, addedUsers, removedUsers, leftUsers):
+class UserStatus(Enum):
+	ADD = "+"
+	REMOVE = "-"
+	LEAVE = "="
+
+def writeOutput(issue, configData, reposlug, users):
 	symbol = lambda currSymbol, color: click.style(currSymbol, bold=True, fg=color)
 	info = click.style(f'{reposlug}#{issue["number"]}', bold=True)
 	click.echo(f'-> {info} ({issue["html_url"]})')
 	
-	for user in addedUsers:
-		click.echo(f'{symbol("+", "green")} {user}')
-
-	for user in removedUsers:
-		click.echo(f'{symbol("-", "red")} {user}')
-
-	for user in leftUsers:
-		click.echo(f'{symbol("=", "blue")} {user}')
+	for (userStatus, user) in users:
+		click.echo(f'   {symbol(userStatus.value, "green")} {user}')
 	
 	print
 	# print(f"#{issue['number']}: {addedUsers}, {removedUsers}, {leftUsers}")
@@ -40,7 +40,7 @@ def patternMatches(issue, location, pattern):
 
 
 # Checks current issue against all patterns
-# Returns triplet of sets: ({addedUsers}, {removedUsers}, {leftUsers})
+# Returns: [(userStatus, user), ...]
 def check(issue, strategy, configData):
 	alreadyAssignedUsers = set(map(lambda assignee: assignee["login"], issue["assignees"]))
 	usersToAssign = set()
@@ -52,17 +52,22 @@ def check(issue, strategy, configData):
 				# Current user should be added to the issue
 				usersToAssign.add(username)
 
+	# Prepare output
+	output = list()
+	fun = lambda userStatus, currSet: [(userStatus, username) for username in currSet]
 	if strategy == "append":
-		return (usersToAssign, set(), alreadyAssignedUsers)
+		output = fun(UserStatus.ADD, usersToAssign)
+		output.extend(fun(UserStatus.LEAVE, alreadyAssignedUsers))
 	elif strategy == "set":
-		return (usersToAssign, set(), alreadyAssignedUsers)
+		output = fun(UserStatus.ADD, usersToAssign)
+		output.extend(fun(UserStatus.LEAVE, alreadyAssignedUsers))
 	elif strategy == "change":
-		return (
-			usersToAssign.difference(alreadyAssignedUsers), 
-			alreadyAssignedUsers.difference(usersToAssign), 
-			alreadyAssignedUsers.intersection(usersToAssign)
-			)
-				
+		output = fun(UserStatus.ADD, usersToAssign.difference(alreadyAssignedUsers))
+		output.extend(fun(UserStatus.REMOVE, alreadyAssignedUsers.difference(usersToAssign)))
+		output.extend(fun(UserStatus.LEAVE, alreadyAssignedUsers.intersection(usersToAssign)))
+	
+	output.sort(key=lambda pair: pair[1].lower())
+	return output
 
 @click.command()
 @click.option('-s', '--strategy', type=click.Choice(['append', 'set', 'change'], case_sensitive=False), default='append', help='How to handle assignment collisions.', show_default=True)
@@ -87,9 +92,6 @@ def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 		'page': 1
 	}
 
-	if strategy == 'set':
-		session.params['assignee'] = 'none'
-
 	while True:
 		r = session.get(f'https://api.github.com/repos/{reposlug}/issues')
 		issues = r.json()
@@ -101,9 +103,9 @@ def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 		# Check all received issues
 		for issue in issues:
 			# Check current issue against all patterns in all locations
-			addedUsers, removedUsers, leftUsers = check(issue, strategy, configData)
+			users = check(issue, strategy, configData)
 			# Append 13, 17, 46
-			writeOutput(issue, configData, reposlug, addedUsers, removedUsers, leftUsers)
+			writeOutput(issue, configData, reposlug, users)
 					
 		# Next page
 		session.params['page'] += 1

@@ -8,6 +8,7 @@ class ConfigData:
         self.token = dataAuth["github"]["token"]
         
         dataRules = configparser.ConfigParser()
+        dataRules.optionxform = str
         dataRules.read_file(config_rules)
 
         if 'fallback' in dataRules:
