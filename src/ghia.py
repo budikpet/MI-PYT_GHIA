@@ -22,18 +22,21 @@ def writeOutput(issue, configData, reposlug, addedUsers, removedUsers, leftUsers
 
 # Matches patterns to data in appropriate locations
 def patternMatches(issue, location, pattern):
+	result = False
+	
 	if location == "title" or location == "any":
-		return bool(re.search(pattern, issue["title"], re.IGNORECASE))
+		result = result or bool(re.search(pattern, issue["title"], re.IGNORECASE))
 	
 	if location == "text" or location == "any":
-		return bool(re.search(pattern, issue["body"], re.IGNORECASE))
+		result = result or bool(re.search(pattern, issue["body"], re.IGNORECASE))
 	
 	if location == "label" or location == "any":
 		for label in issue["labels"]:
 			if bool(re.search(pattern, label["name"], re.IGNORECASE)):
-				return True
-		
-		return False
+				result = True
+				break
+	
+	return result
 
 
 # Checks current issue against all patterns
