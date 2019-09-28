@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "venv/bin/python3"
+    "python.pythonPath": "venv/bin/python",
+    // "python.pythonPath": "/Users/petr/Documents/Projects/Python/MI-PYT_GHIA/venv/bin/python"
 }
