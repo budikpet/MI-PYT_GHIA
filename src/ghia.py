@@ -4,6 +4,7 @@ import re
 import sys
 import json
 from enum import Enum
+from configparser import ConfigParser
 from configData import ConfigData
 
 class UserStatus(Enum):
@@ -12,7 +13,7 @@ class UserStatus(Enum):
 	LEAVE = "="	
 
 def hasFallbackLabel(issue, configData):
-	existingLabels = [label for label in issue["labels"] if label["name"] == configData.unknownLabel]
+	existingLabels = [label for label in issue["labels"] if label["name"] == configData.fallbackLabel]
 	return len(existingLabels) > 0
 
 def writeOutput(session, issue, configData, dry_run, reposlug, users):
@@ -40,8 +41,8 @@ def writeOutput(session, issue, configData, dry_run, reposlug, users):
 			data = json.dumps(data)
 			r = session.patch(f'https://api.github.com/repos/{reposlug}/issues/{issue["number"]}', data=data)
 			statusCode = r.status_code	
-		elif configData.unknownLabel != "" and not hasFallbackLabel(issue, configData):
-			labels = [configData.unknownLabel]
+		elif configData.fallbackLabel != "" and not hasFallbackLabel(issue, configData):
+			labels = [configData.fallbackLabel]
 			labels.extend([label["name"] for label in issue["labels"]])
 			data = {
 				"labels": labels
@@ -58,13 +59,13 @@ def writeOutput(session, issue, configData, dry_run, reposlug, users):
 		if len(users) != 0:
 			for (userStatus, user) in users:
 				click.echo(f'   {symbol(userStatus.value, "green")} {user}')
-		elif configData.unknownLabel != "":
+		elif configData.fallbackLabel != "":
 			msg = ""
 			if not hasFallbackLabel(issue, configData):
 				msg = "added label"
 			else:
 				msg = "already has label"
-			click.echo(f'   {click.style("FALLBACK", fg="yellow")}: {msg} \"{configData.unknownLabel}\"')
+			click.echo(f'   {click.style("FALLBACK", fg="yellow")}: {msg} \"{configData.fallbackLabel}\"')
 	
 	print
 
@@ -117,12 +118,41 @@ def check(issue, strategy, configData):
 	output.sort(key=lambda pair: pair[1].lower())
 	return output
 
+def validateAuth(ctx, param, authFile):
+	dataAuth = ConfigParser()
+	dataAuth.read_file(authFile)
+	
+	if "github" in dataAuth.keys():
+		if "token" in dataAuth["github"].keys():
+			return dataAuth
+		
+	raise click.BadParameter('incorrect configuration format')
+
+def validateRules(ctx, param, rulesFile):
+	dataRules = ConfigParser()
+	dataRules.optionxform = str
+	dataRules.read_file(rulesFile)
+	
+	if "patterns" in dataRules.keys():
+		return dataRules
+		
+	raise click.BadParameter('incorrect configuration format')
+
+def validateReposlug(ctx, param, reposlug):
+	split = reposlug.split("/")
+
+	if len(split) == 2:
+		return reposlug
+	else:
+		raise click.BadParameter('Error: Invalid value for "REPOSLUG": not in owner/repository format')
+
+
 @click.command()
 @click.option('-s', '--strategy', type=click.Choice(['append', 'set', 'change'], case_sensitive=False), default='append', help='How to handle assignment collisions.', show_default=True)
 @click.option('-d', '--dry-run', is_flag=True, help='Run without making any changes.')
-@click.option('-a', '--config-auth', type=click.File('r'), required=True, metavar='FILENAME', help='File with authorization configuration.')
-@click.option('-r', '--config-rules', type=click.File('r'), required=True, metavar='FILENAME', help='File with assignment rules configuration.')
-@click.argument('REPOSLUG', required=True)
+@click.option('-a', '--config-auth', callback=validateAuth, type=click.File('r'), required=True, metavar='FILENAME', help='File with authorization configuration.')
+@click.option('-r', '--config-rules', callback=validateRules, type=click.File('r'), required=True, metavar='FILENAME', help='File with assignment rules configuration.')
+@click.argument('REPOSLUG', callback=validateReposlug, required=True)
 def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 	"""CLI tool for automatic issue assigning of GitHub issues"""
 	

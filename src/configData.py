@@ -3,35 +3,28 @@ import configparser
 class ConfigData:
     
     def __init__(self, config_auth, config_rules):
-        dataAuth = configparser.ConfigParser()
-        dataAuth.read_file(config_auth)
-        self.token = dataAuth["github"]["token"]
+        self.token = config_auth["github"]["token"]
         
-        dataRules = configparser.ConfigParser()
-        dataRules.optionxform = str
-        dataRules.read_file(config_rules)
-
-        if 'fallback' in dataRules:
-            self.unknownLabel = dataRules['fallback']['label']
-        else:
-            self.unknownLabel = ""
-
-        self.loadRules(dataRules)
+        self.loadRules(config_rules)
         
     # 
-    # Loads userPatterns data: 
+    # Loads fallback label name and userPatterns data: 
     #   { 
     #       location: [ 
     #           (pattern, username),
     #           ...
     #       ] 
     #   }
-    def loadRules(self, dataRules):
+    def loadRules(self, config_rules):
         self.userPatterns = {}
 
-        for user in dataRules['patterns']:
-            # self.userPatterns[user] = dataRules['patterns'][user].splitlines()
-            lines = dataRules['patterns'][user].splitlines()
+        if 'fallback' in config_rules:
+            self.fallbackLabel = config_rules['fallback']['label']
+        else:
+            self.fallbackLabel = ""
+
+        for user in config_rules['patterns']:
+            lines = config_rules['patterns'][user].splitlines()
             for line in lines:
                 split = line.split(sep=":", maxsplit=1)
                 if len(split) < 2:
