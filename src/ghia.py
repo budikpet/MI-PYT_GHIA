@@ -41,8 +41,10 @@ def writeOutput(session, issue, configData, dry_run, reposlug, users):
 			r = session.patch(f'https://api.github.com/repos/{reposlug}/issues/{issue["number"]}', data=data)
 			statusCode = r.status_code	
 		elif configData.unknownLabel != "" and not hasFallbackLabel(issue, configData):
+			labels = [configData.unknownLabel]
+			labels.extend([label["name"] for label in issue["labels"]])
 			data = {
-				"labels": [configData.unknownLabel]
+				"labels": labels
 			}
 			data = json.dumps(data)
 			r = session.patch(f'https://api.github.com/repos/{reposlug}/issues/{issue["number"]}', data=data)
@@ -59,7 +61,7 @@ def writeOutput(session, issue, configData, dry_run, reposlug, users):
 		elif configData.unknownLabel != "":
 			msg = ""
 			if not hasFallbackLabel(issue, configData):
-				msg = "added label "
+				msg = "added label"
 			else:
 				msg = "already has label"
 			click.echo(f'   {click.style("FALLBACK", fg="yellow")}: {msg} \"{configData.unknownLabel}\"')

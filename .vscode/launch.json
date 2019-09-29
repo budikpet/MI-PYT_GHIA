@@ -10,7 +10,23 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "args": ["-d", "-s", "append", "-a", "src/credentials.cfg", "-r", "src/rules.cfg", "mi-pyt-ghia/budikpet"],
+            "args": ["-s", "append", "-a", "src/credentials.cfg", "-r", "src/rules.cfg", "mi-pyt-ghia/budikpet"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Current File Test",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "args": ["-s", "append", "-a", "src/credentials.cfg", "-r", "src/fixtures/rules.match_text.cfg", "mi-pyt-ghia/budikpet"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Current File Fallback",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "args": ["-d",  "-a", "src/credentials.cfg", "-r", "src/fixtures/rules.fallback_label.cfg", "mi-pyt-ghia/budikpet"],
             "console": "integratedTerminal"
         },
         {
