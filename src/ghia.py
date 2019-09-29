@@ -1,24 +1,52 @@
 import click
 import requests
 import re
+import sys
+import json
 from enum import Enum
 from configData import ConfigData
 
 class UserStatus(Enum):
 	ADD = "+"
 	REMOVE = "-"
-	LEAVE = "="
+	LEAVE = "="	
 
-def writeOutput(issue, configData, reposlug, users):
+def writeOutput(session, issue, configData, dry_run, reposlug, users):
 	symbol = lambda currSymbol, color: click.style(currSymbol, bold=True, fg=color)
-	info = click.style(f'{reposlug}#{issue["number"]}', bold=True)
-	click.echo(f'-> {info} ({issue["html_url"]})')
+	info = f'{reposlug}#{issue["number"]}'
+	click.echo(f'-> {click.style(info, bold=True)} ({issue["html_url"]})')
+
+	# Update issue
+	statusCode = 403
+	if not dry_run:
+		assignees = list()
+		changes = False
+		for user in users:
+			assignees.append(user[1])
+			if user[0] != UserStatus.LEAVE:
+				changes = True
+		
+		# if len(data["assignees"] != 0) or len(users) != 0:
+			# Current issue has assignees that have to be added or deleted
+		if changes:
+			data = {
+				"assignees": list({user[1] for user in users if user[0] != UserStatus.REMOVE})
+			}
+			data = json.dumps(data)
+			r = session.patch(f'https://api.github.com/repos/{reposlug}/issues/{issue["number"]}', data=data)
+			statusCode = r.status_code	
+		else:
+			statusCode = 200
 	
-	for (userStatus, user) in users:
-		click.echo(f'   {symbol(userStatus.value, "green")} {user}')
+	# Create output
+	if statusCode != 200 and not dry_run:
+		# Error occured
+		click.echo(f'   {click.style("ERROR", fg="red")}: Could not update issue {info}', err=True)
+	else:
+		for (userStatus, user) in users:
+			click.echo(f'   {symbol(userStatus.value, "green")} {user}')
 	
 	print
-	# print(f"#{issue['number']}: {addedUsers}, {removedUsers}, {leftUsers}")
 
 # Matches patterns to data in appropriate locations
 def patternMatches(issue, location, pattern):
@@ -56,7 +84,7 @@ def check(issue, strategy, configData):
 	output = list()
 	fun = lambda userStatus, currSet: [(userStatus, username) for username in currSet]
 	if strategy == "append":
-		output = fun(UserStatus.ADD, usersToAssign)
+		output = fun(UserStatus.ADD, usersToAssign.difference(alreadyAssignedUsers))
 		output.extend(fun(UserStatus.LEAVE, alreadyAssignedUsers))
 	elif strategy == "set":
 		output = fun(UserStatus.ADD, usersToAssign)
@@ -85,7 +113,9 @@ def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 	session = requests.Session()
 	session.headers = {
 		'User-Agent': 'Python',
-		'Authorization': f'token {configData.token}'
+		'Authorization': f'token {configData.token}',
+		# 'Content-Type': 'application/json', 
+		# 'Accept': 'application/json'
 		}
 	session.params = {
 		'per_page': 50,
@@ -96,7 +126,11 @@ def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 		r = session.get(f'https://api.github.com/repos/{reposlug}/issues')
 		issues = r.json()
 
-		if len(issues) <= 0:
+		if r.status_code != 200:
+			click.echo(f'{click.style("ERROR", fg="red")}: Could not list issues for repository {reposlug}', err=True)
+			session.close()
+			sys.exit(10)
+		elif len(issues) <= 0:
 			# No more issues exist
 			break
 		
@@ -104,16 +138,12 @@ def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 		for issue in issues:
 			# Check current issue against all patterns in all locations
 			users = check(issue, strategy, configData)
-			# Append 13, 17, 46
-			writeOutput(issue, configData, reposlug, users)
+			writeOutput(session, issue, configData, dry_run, reposlug, users)
 					
 		# Next page
 		session.params['page'] += 1
 
 	session.close()
-	# testConfig = f'{len(issues)}'
-	# testConfig = click.style(testConfig, fg='red', bg='black')
-	# click.echo(testConfig)
 	
 # Toto bude použito při zavolání z CLI
 if __name__ == '__main__':
