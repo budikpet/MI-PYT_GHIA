@@ -11,21 +11,26 @@ class UserStatus(Enum):
 	REMOVE = "-"
 	LEAVE = "="	
 
+def hasFallbackLabel(issue, configData):
+	existingLabels = [label for label in issue["labels"] if label["name"] == configData.unknownLabel]
+	return len(existingLabels) > 0
+
 def writeOutput(session, issue, configData, dry_run, reposlug, users):
 	symbol = lambda currSymbol, color: click.style(currSymbol, bold=True, fg=color)
 	info = f'{reposlug}#{issue["number"]}'
 	click.echo(f'-> {click.style(info, bold=True)} ({issue["html_url"]})')
 
 	# Update issue
-	statusCode = 403
+	statusCode = 200
+	changes = False
+
+	assignees = list()
+	for user in users:
+		assignees.append(user[1])
+		if user[0] != UserStatus.LEAVE:
+			changes = True
+
 	if not dry_run:
-		assignees = list()
-		changes = False
-		for user in users:
-			assignees.append(user[1])
-			if user[0] != UserStatus.LEAVE:
-				changes = True
-		
 		# if len(data["assignees"] != 0) or len(users) != 0:
 			# Current issue has assignees that have to be added or deleted
 		if changes:
@@ -35,16 +40,29 @@ def writeOutput(session, issue, configData, dry_run, reposlug, users):
 			data = json.dumps(data)
 			r = session.patch(f'https://api.github.com/repos/{reposlug}/issues/{issue["number"]}', data=data)
 			statusCode = r.status_code	
-		else:
-			statusCode = 200
+		elif configData.unknownLabel != "" and not hasFallbackLabel(issue, configData):
+			data = {
+				"labels": [configData.unknownLabel]
+			}
+			data = json.dumps(data)
+			r = session.patch(f'https://api.github.com/repos/{reposlug}/issues/{issue["number"]}', data=data)
+			statusCode = r.status_code
 	
 	# Create output
 	if statusCode != 200 and not dry_run:
 		# Error occured
 		click.echo(f'   {click.style("ERROR", fg="red")}: Could not update issue {info}', err=True)
 	else:
-		for (userStatus, user) in users:
-			click.echo(f'   {symbol(userStatus.value, "green")} {user}')
+		if len(users) != 0:
+			for (userStatus, user) in users:
+				click.echo(f'   {symbol(userStatus.value, "green")} {user}')
+		elif configData.unknownLabel != "":
+			msg = ""
+			if not hasFallbackLabel(issue, configData):
+				msg = "added label "
+			else:
+				msg = "already has label"
+			click.echo(f'   {click.style("FALLBACK", fg="yellow")}: {msg} \"{configData.unknownLabel}\"')
 	
 	print
 

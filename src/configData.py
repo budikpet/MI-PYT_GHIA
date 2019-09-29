@@ -12,7 +12,7 @@ class ConfigData:
         dataRules.read_file(config_rules)
 
         if 'fallback' in dataRules:
-            self.unknownLabel = dataRules['fallback']['name']
+            self.unknownLabel = dataRules['fallback']['label']
         else:
             self.unknownLabel = ""
 
