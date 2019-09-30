@@ -1,10 +1,10 @@
 {
-    // "python.pythonPath": "venv/bin/python",
+    "python.pythonPath": "venv/bin/python",
+    // "python.pythonPath": "/Users/petr/Documents/Projects/Python/MI-PYT_GHIA/venv/bin/python",
     "python.unitTest.pyTestArgs": [
-        "src"
+        "tests"
     ],
     "python.unitTest.unittestEnabled": false,
     "python.unitTest.nosetestsEnabled": false,
     "python.unitTest.pyTestEnabled": true,
-    "python.pythonPath": "/Users/petr/Documents/Projects/Python/MI-PYT_GHIA/venv/bin/python"
 }
