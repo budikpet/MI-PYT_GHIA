@@ -6,27 +6,19 @@
     "configurations": [
         
         {
-            "name": "Python: Current File (Integrated Terminal)",
+            "name": "Python run GHIA",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "program": "${workspaceFolder}/src/ghia.py",
             "args": ["-s", "append", "-a", "src/credentials.cfg", "-r", "src/rules.cfg", "mi-pyt-ghia/budikpet"],
             "console": "integratedTerminal"
         },
         {
-            "name": "Python: Current File Test",
+            "name": "Python test GHIA",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
-            "args": ["-s", "append", "-a", "src/credentials.cfg", "-r", "src/fixtures/rules.match_text.cfg", "mi-pyt-ghia/budikpet"],
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Python: Current File Fallback",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "args": ["-d",  "-a", "src/credentials.cfg", "-r", "src/fixtures/rules.fallback_label.cfg", "mi-pyt-ghia/budikpet"],
+            "program": "${workspaceFolder}/src/ghia.py",
+            "args": ["--dry-run", "-s", "append", "-a", "src/credentials.cfg", "-r", "tests/fixtures/rules.forbidden_repo.cfg", "ghia-anna/awesome"],
             "console": "integratedTerminal"
         },
         {
