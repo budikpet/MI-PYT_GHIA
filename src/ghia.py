@@ -4,7 +4,8 @@ import re
 import sys
 import json
 import validator
-from strategy import Strategies, GhiaContext, GhiaStrategy, GroupedUsers, UserStatus
+from myDataClasses import GroupedUsers, UserStatus
+from strategy import Strategies, GhiaContext, GhiaStrategy
 from enum import Enum
 from configData import ConfigData
 
