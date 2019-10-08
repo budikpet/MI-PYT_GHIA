@@ -1,6 +1,6 @@
 from enum import Enum
-from configData import ConfigData
-from myDataClasses import GroupedUsers, UserStatus
+from config_data import ConfigData
+from my_data_classes import GroupedUsers, UserStatus
 import requests
 import click
 from typing import Set, List
@@ -14,38 +14,38 @@ class GhiaContext():
         self.session: requests.session = None
 
         # Get configuration
-        self.configData: ConfigData = ConfigData(config_auth, config_rules)
+        self.config_data: ConfigData = ConfigData(config_auth, config_rules)
 
-    def getUserPatterns(self):
-        return self.configData.userPatterns
+    def get_user_patterns(self):
+        return self.config_data.user_patterns
 
-    def getToken(self):
-        return self.configData.token
+    def get_token(self):
+        return self.config_data.token
 
-    def getFallbackLabel(self):
-        return self.configData.fallbackLabel
+    def get_fallback_label(self):
+        return self.config_data.fallback_label
 
 class GhiaStrategy():
-    def getGroupedUsers(self, usersAutoMatched: Set[str], usersAlreadyAssigned: Set[str]) -> GroupedUsers:
+    def get_grouped_users(self, users_automatched: Set[str], users_already_assigned: Set[str]) -> GroupedUsers:
         pass
 
 class AppendStrategy(GhiaStrategy):
-    def getGroupedUsers(self, usersAutoMatched: Set[str], usersAlreadyAssigned: Set[str]) -> GroupedUsers:
-        return GroupedUsers(usersAutoMatched=usersAutoMatched.difference(usersAlreadyAssigned), 
-            usersToLeave=usersAlreadyAssigned,
-            usersToRemove=set())
+    def get_grouped_users(self, users_automatched: Set[str], users_already_assigned: Set[str]) -> GroupedUsers:
+        return GroupedUsers(users_automatched=users_automatched.difference(users_already_assigned), 
+            users_to_leave=users_already_assigned,
+            users_to_remove=set())
 
 class SetStrategy(GhiaStrategy):
-    def getGroupedUsers(self, usersAutoMatched: Set[str], usersAlreadyAssigned: Set[str]) -> GroupedUsers:
-        return GroupedUsers(usersAutoMatched=usersAutoMatched, 
-            usersToLeave=usersAlreadyAssigned,
-            usersToRemove=set())
+    def get_grouped_users(self, users_automatched: Set[str], users_already_assigned: Set[str]) -> GroupedUsers:
+        return GroupedUsers(users_automatched=users_automatched, 
+            users_to_leave=users_already_assigned,
+            users_to_remove=set())
 
 class ChangeStrategy(GhiaStrategy):
-    def getGroupedUsers(self, usersAutoMatched: Set[str], usersAlreadyAssigned: Set[str]) -> GroupedUsers:
-        return GroupedUsers(usersAutoMatched=usersAutoMatched.difference(usersAlreadyAssigned), 
-            usersToLeave=usersAlreadyAssigned.intersection(usersAutoMatched),
-            usersToRemove=usersAlreadyAssigned.difference(usersAutoMatched))
+    def get_grouped_users(self, users_automatched: Set[str], users_already_assigned: Set[str]) -> GroupedUsers:
+        return GroupedUsers(users_automatched=users_automatched.difference(users_already_assigned), 
+            users_to_leave=users_already_assigned.intersection(users_automatched),
+            users_to_remove=users_already_assigned.difference(users_automatched))
 
 class Strategies(Enum):
 	APPEND = AppendStrategy()

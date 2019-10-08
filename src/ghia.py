@@ -1,7 +1,7 @@
 import click
 import validator
 from strategy import Strategies
-from ghia_cliLogic import ghiaRun
+from ghia_cli_logic import ghia_run
 	
 inputStrategies = [strategy.name.lower() for strategy in Strategies]
 
@@ -13,7 +13,7 @@ inputStrategies = [strategy.name.lower() for strategy in Strategies]
 @click.argument('REPOSLUG', callback=validator.validateReposlug, required=True)
 def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 	"""CLI tool for automatic issue assigning of GitHub issues"""
-	ghiaRun(strategy, dry_run, config_auth, config_rules, reposlug)
+	ghia_run(strategy, dry_run, config_auth, config_rules, reposlug)
 	
 # Toto bude použito při zavolání z CLI
 if __name__ == '__main__':

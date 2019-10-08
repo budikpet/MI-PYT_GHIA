@@ -3,24 +3,24 @@ import requests
 import re
 import sys
 import json
-from myDataClasses import GroupedUsers, UserStatus
+from my_data_classes import GroupedUsers, UserStatus
 from strategy import Strategies, GhiaContext, GhiaStrategy
 from enum import Enum
-from configData import ConfigData
+from config_data import ConfigData
 
-def hasFallbackLabel(issue, context):
-	existingLabels = [label for label in issue["labels"] if label["name"] == context.getFallbackLabel()]
-	return len(existingLabels) > 0
+def has_fallback_label(issue, context):
+	existing_labels = [label for label in issue["labels"] if label["name"] == context.get_fallback_label()]
+	return len(existing_labels) > 0
 
-def getOutputData(context: GhiaContext, issue, groupedUsers: GroupedUsers):
+def get_output_data(context: GhiaContext, issue, grouped_users: GroupedUsers):
 	data = None
 
-	if groupedUsers.updateNeeded():
+	if grouped_users.update_needed():
 		data = {
-			"assignees": groupedUsers.getUsersToAssign()
+			"assignees": grouped_users.get_users_to_assign()
 		}
-	elif context.getFallbackLabel() != "" and not hasFallbackLabel(issue, context):
-		labels = [context.getFallbackLabel()]
+	elif context.get_fallback_label() != "" and not has_fallback_label(issue, context):
+		labels = [context.get_fallback_label()]
 		labels.extend([label["name"] for label in issue["labels"]])
 		data = {
 			"labels": labels
@@ -31,54 +31,54 @@ def getOutputData(context: GhiaContext, issue, groupedUsers: GroupedUsers):
 
 	return data
 
-def updateIssue(context: GhiaContext, issue, groupedUsers: GroupedUsers):
+def update_issue(context: GhiaContext, issue, grouped_users: GroupedUsers):
 	# Update issue
-	statusCode = 200
+	status_code = 200
 
 	if not context.dry_run:
-		data = getOutputData(context, issue, groupedUsers)
+		data = get_output_data(context, issue, grouped_users)
 
 		if data is not None:
 			r = context.session.patch(f'{context.base}/repos/{context.reposlug}/issues/{issue["number"]}', data=data)
-			statusCode = r.status_code
+			status_code = r.status_code
 
-	return statusCode
+	return status_code
 
-def writeUser(userStatus: UserStatus, user: str):
-	symbol = lambda currSymbol, color: click.style(currSymbol, bold=True, fg=color)
+def write_user(user_status: UserStatus, user: str):
+	symbol = lambda curr_symbol, color: click.style(curr_symbol, bold=True, fg=color)
 	color = ""
 
-	if userStatus == UserStatus.ADD:
+	if user_status == UserStatus.ADD:
 		color = "green"
-	elif userStatus == UserStatus.LEAVE:
+	elif user_status == UserStatus.LEAVE:
 		color = "blue"
 	else:
 		color = "red"
 
-	click.echo(f'   {symbol(userStatus.value, color)} {user}')
+	click.echo(f'   {symbol(user_status.value, color)} {user}')
 
-def writeLabel(issue, context: GhiaContext):
+def write_label(issue, context: GhiaContext):
 	msg = ""
-	if not hasFallbackLabel(issue, context):
+	if not has_fallback_label(issue, context):
 		msg = "added label"
 	else:
 		msg = "already has label"
-	click.echo(f'   {click.style("FALLBACK", fg="yellow")}: {msg} \"{context.getFallbackLabel()}\"')
+	click.echo(f'   {click.style("FALLBACK", fg="yellow")}: {msg} \"{context.get_fallback_label()}\"')
 
-def writeOutput(context: GhiaContext, issue, groupedUsers: GroupedUsers, statusCode):
+def write_output(context: GhiaContext, issue, grouped_users: GroupedUsers, status_code: int):
 	info = f'{context.reposlug}#{issue["number"]}'
 	click.echo(f'-> {click.style(info, bold=True)} ({issue["html_url"]})')
 
 	# Create output
-	if statusCode != 200 and not context.dry_run:
+	if status_code != 200 and not context.dry_run:
 		# Error occured
 		click.echo(f'   {click.style("ERROR", fg="red")}: Could not update issue {info}', err=True)
 	else:
-		if groupedUsers.hasUsers() != 0:
-			for (userStatus, user) in groupedUsers.getOutputList():
-				writeUser(userStatus, user)
-		elif context.getFallbackLabel() != "":
-			writeLabel(issue, context)
+		if grouped_users.has_users() != 0:
+			for (user_status, user) in grouped_users.get_output_list():
+				write_user(user_status, user)
+		elif context.get_fallback_label() != "":
+			write_label(issue, context)
 
 	print
 
@@ -102,22 +102,22 @@ def patternMatches(issue, location, pattern):
 
 
 # Checks current issue against all patterns
-# Returns: [(userStatus, user), ...]
-def groupUsers(context: GhiaContext, issue):
-	alreadyAssignedUsers = set(map(lambda assignee: assignee["login"], issue["assignees"]))
-	usersAutoMatched = set()
+# Returns: [(user_status, user), ...]
+def group_users(context: GhiaContext, issue):
+	already_assigned_users = set(map(lambda assignee: assignee["login"], issue["assignees"]))
+	users_automatched = set()
 
 	# Find users that should be assigned
-	for (location, pairs) in context.getUserPatterns().items():
+	for (location, pairs) in context.get_user_patterns().items():
 		for (pattern, username) in pairs:
 			if patternMatches(issue, location, pattern):
 				# Current user should be added to the issue
-				usersAutoMatched.add(username)
+				users_automatched.add(username)
 
 	# Prepare output
-	return context.strategy.getGroupedUsers(usersAutoMatched, alreadyAssignedUsers)
+	return context.strategy.get_grouped_users(users_automatched, already_assigned_users)
 
-def ghiaRun(strategy, dry_run, config_auth, config_rules, reposlug):
+def ghia_run(strategy, dry_run, config_auth, config_rules, reposlug):
 	"""Run GHIA algorighm to automatically assign GitHub issues"""
 
 	context = GhiaContext("https://api.github.com", strategy, dry_run, config_auth, config_rules, reposlug)
@@ -126,7 +126,7 @@ def ghiaRun(strategy, dry_run, config_auth, config_rules, reposlug):
 	context.session = requests.Session()
 	context.session.headers = {
 		'User-Agent': 'Python',
-		'Authorization': f'token {context.getToken()}',
+		'Authorization': f'token {context.get_token()}',
 		# 'Content-Type': 'application/json', 
 		# 'Accept': 'application/json'
 		}
@@ -150,14 +150,14 @@ def ghiaRun(strategy, dry_run, config_auth, config_rules, reposlug):
 		# Check all received issues
 		for issue in issues:
 			# Check current issue against all patterns in all locations
-			groupedUsers = groupUsers(context, issue)
-			statusCode = updateIssue(context, issue, groupedUsers)
-			writeOutput(context, issue, groupedUsers, statusCode)
+			grouped_users = group_users(context, issue)
+			status_code = update_issue(context, issue, grouped_users)
+			write_output(context, issue, grouped_users, status_code)
 
 		# Next page
-		nextPath = r.links.get("next")
-		if nextPath is not None:
-			r = context.session.get(nextPath["url"])
+		next_path = r.links.get("next")
+		if next_path is not None:
+			r = context.session.get(next_path["url"])
 			print
 		else:
 			# No more pages exist

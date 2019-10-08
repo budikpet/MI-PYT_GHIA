@@ -5,23 +5,23 @@ class ConfigData:
     def __init__(self, config_auth, config_rules):
         self.token = config_auth["github"]["token"]
         
-        self.loadRules(config_rules)
+        self.load_rules(config_rules)
         
     # 
-    # Loads fallback label name and userPatterns data: 
+    # Loads fallback label name and user_patterns data: 
     #   { 
     #       location: [ 
     #           (pattern, username),
     #           ...
     #       ] 
     #   }
-    def loadRules(self, config_rules):
-        self.userPatterns = {}
+    def load_rules(self, config_rules):
+        self.user_patterns = {}
 
         if 'fallback' in config_rules:
-            self.fallbackLabel = config_rules['fallback']['label']
+            self.fallback_label = config_rules['fallback']['label']
         else:
-            self.fallbackLabel = ""
+            self.fallback_label = ""
 
         for user in config_rules['patterns']:
             lines = config_rules['patterns'][user].splitlines()
@@ -32,7 +32,7 @@ class ConfigData:
                 location, pattern = split
                 pair = (pattern, user)
 
-                if location not in self.userPatterns.keys():
-                    self.userPatterns[location] = [pair]
+                if location not in self.user_patterns.keys():
+                    self.user_patterns[location] = [pair]
                 else:
-                    self.userPatterns[location].append(pair)
+                    self.user_patterns[location].append(pair)
