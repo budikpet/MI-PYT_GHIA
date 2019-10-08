@@ -9,9 +9,9 @@ import sys
 
 
 def run(line, **kwargs):
-    program = '/Users/petr/Documents/Projects/Python/MI-PYT_GHIA/src/ghia.py'
-    print(f'$ {program}', line)
-    command = [sys.executable, program] + shlex.split(line)
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    dir_path = os.path.dirname(dir_path)
+    command = [sys.executable, f"{dir_path}/src/ghia.py"] + shlex.split(line)
     return subprocess.run(command,
                           stdout=subprocess.PIPE,
                           stderr=subprocess.PIPE,
