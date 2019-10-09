@@ -22,6 +22,9 @@ class GhiaContext():
     def get_token(self):
         return self.config_data.token
 
+    def get_secret(self):
+        return self.config_data.secret
+
     def get_fallback_label(self):
         return self.config_data.fallback_label
 

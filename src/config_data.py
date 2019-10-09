@@ -3,7 +3,9 @@ import configparser
 class ConfigData:
     
     def __init__(self, config_auth, config_rules):
-        self.token = config_auth["github"]["token"]
+        github = config_auth["github"]
+        self.token = github["token"]
+        self.secret = github["secret"]
         
         self.load_rules(config_rules)
         

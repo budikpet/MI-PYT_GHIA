@@ -1,7 +1,22 @@
 import click
 import validator
+import os
+from flask import Flask
 from strategy import Strategies
 from ghia_cli_logic import ghia_run
+from strategy import GhiaContext
+
+# Pro testování webhook buď nasadit na pythonanywhere, nebo použít https://requestbin.com/
+# Získání username: https://developer.github.com/v3/users/#get-the-authenticated-user
+
+def create_app(config=None):
+	app = Flask(__name__)
+
+	app.config.from_pyfile(config or 'config.py')
+	app.config['the_answer'] = 42
+	app.secret_key = os.environ.get('MY_SECRET', None)
+
+	return app
 	
 inputStrategies = [strategy.name.lower() for strategy in Strategies]
 
