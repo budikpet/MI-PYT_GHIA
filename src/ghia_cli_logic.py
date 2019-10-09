@@ -39,7 +39,7 @@ def update_issue(context: GhiaContext, issue, grouped_users: GroupedUsers):
 		data = get_output_data(context, issue, grouped_users)
 
 		if data is not None:
-			r = context.session.patch(f'{context.base}/repos/{context.reposlug}/issues/{issue["number"]}', data=data)
+			r = context.session.patch(f'{context.base}/repos/{context.get_reposlug()}/issues/{issue["number"]}', data=data)
 			status_code = r.status_code
 
 	return status_code
@@ -134,13 +134,13 @@ def ghia_run(strategy, dry_run, config_auth, config_rules, reposlug):
 		'per_page': 50
 	}
 
-	r = context.session.get(f'{context.base}/repos/{reposlug}/issues')
+	r = context.session.get(f'{context.base}/repos/{context.get_reposlug()}/issues')
 
 	while True:
 		issues = r.json()
 
 		if r.status_code != 200:
-			click.echo(f'{click.style("ERROR", fg="red")}: Could not list issues for repository {reposlug}', err=True)
+			click.echo(f'{click.style("ERROR", fg="red")}: Could not list issues for repository {context.get_reposlug()}', err=True)
 			context.session.close()
 			sys.exit(10)
 		elif len(issues) <= 0:

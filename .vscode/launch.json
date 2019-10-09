@@ -18,8 +18,23 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/src/ghia.py",
-            "args": ["--dry-run", "-s", "append", "-a", "src/credentials.cfg", "-r", "tests/fixtures/rules.forbidden_repo.cfg", "ghia-anna/awesome"],
+            "args": ["--dry-run", "-s", "append", "-a", "src/credentials.cfg", "-r", "tests/fixtures/rules.reset.cfg", "mi-pyt-ghia/budikpet"],
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Flask",
+            "type": "python",
+            "request": "launch",
+            "module": "flask",
+            // "env": {
+            //     "FLASK_APP": "app.py"
+            // },
+            "args": [
+                "run",
+                // "--no-debugger",
+                // "--no-reload"
+            ],
+            "jinja": true
         },
         {
             "name": "Python: Remote Attach",
@@ -53,21 +68,6 @@
                 "--nothreading"
             ],
             "django": true
-        },
-        {
-            "name": "Python: Flask",
-            "type": "python",
-            "request": "launch",
-            "module": "flask",
-            "env": {
-                "FLASK_APP": "app.py"
-            },
-            "args": [
-                "run",
-                "--no-debugger",
-                "--no-reload"
-            ],
-            "jinja": true
         },
         {
             "name": "Python: Current File (External Terminal)",

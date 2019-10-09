@@ -1,11 +1,15 @@
-import configparser
+from configparser import ConfigParser
 
 class ConfigData:
     
     def __init__(self, config_auth, config_rules):
         github = config_auth["github"]
         self.token = github["token"]
-        self.secret = github["secret"]
+        
+        if github.get("secret") is not None:
+            self.secret = github["secret"]
+        else:
+            self.secret = ""
         
         self.load_rules(config_rules)
         
