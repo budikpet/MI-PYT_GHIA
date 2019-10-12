@@ -2,11 +2,11 @@ import click
 import validator
 import requests
 import os
-from flask import Flask
+from flask import Flask, render_template
 from strategy import Strategies, GhiaContext
 from ghia_cli_logic import ghia_run
 from strategy import GhiaContext
-import validator
+from typing import Tuple
 
 # Pro testování webhook buď nasadit na pythonanywhere, nebo použít https://requestbin.com/
 # GHIA_CONFIG = /Users/petr/Documents/Projects/Python/MI-PYT_GHIA/src/credentials.cfg:/Users/petr/Documents/Projects/Python/MI-PYT_GHIA/src/rules.cfg
@@ -35,23 +35,28 @@ def get_context(config_auth, config_rules) -> GhiaContext:
 
 	return context
 
+def get_configs() -> Tuple[str, str]:
+	env = os.environ["GHIA_CONFIG"].split(":")
+
+	if "rules" in env[0]:
+		return env[1], env[0]
+	else:
+		return env[0], env[1]
+
 def create_app(config=None):
 	app = Flask(__name__)
 
-	# TODO: Get files from GHIA_CONFIG env var
-	config_auth = "/Users/petr/Documents/Projects/Python/MI-PYT_GHIA/src/credentials.cfg"
-	config_rules = "/Users/petr/Documents/Projects/Python/MI-PYT_GHIA/src/rules.cfg"
-	
+	config_auth, config_rules = get_configs()
 	context = get_context(config_auth, config_rules)
 
 	# app.config.from_pyfile(config or 'config.py')
 	# app.config['the_answer'] = 42
-	app.secret_key = os.environ.get('MY_SECRET', None)
+	app.secret_key = context.get_secret()
 	
 	# TODO: Use blueprint to separate routes
 	@app.route('/')
 	def index():
-		return 'MI-PYT je nejlepší předmět na FITu!'
+		return render_template("template.html")
 
 	return app
 
