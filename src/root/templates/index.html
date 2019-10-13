@@ -22,6 +22,18 @@
             <h2>Issue processing</h2>
 
             <p>All actions will be performed via user: {{ context.username| github_url }}</p>
+
+            <ul>
+                {% for user in context.get_user_patterns(by_user=True) %}
+                    <li>{{ user }}</li>
+                    <ul>
+                        <li>test</li>
+                    </ul>
+                {% endfor %}
+            </ul>
+
+
+            <p>Issues without any assignment will be labeled {{ context.get_fallback_label() }}</p>
         </div>
         <div id="usage">
             <h2>Service usage</h2>

@@ -17,7 +17,10 @@ class GhiaContext():
         # Get configuration
         self.config_data: ConfigData = ConfigData(config_auth, config_rules)
 
-    def get_user_patterns(self):
+    def get_user_patterns(self, by_user=False):
+        if by_user:
+            return self.config_data.user_patterns_by_user
+
         return self.config_data.user_patterns
 
     def get_token(self):
