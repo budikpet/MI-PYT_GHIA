@@ -35,7 +35,7 @@ def get_context(config_auth, config_rules) -> GhiaContext:
 	return context
 
 def get_configs() -> Tuple[str, str]:
-	env = os.environ["GHIA_CONFIG"].split(":")
+	env = os.getenv("GHIA_CONFIG").split(":")
 
 	if "rules" in env[0]:
 		return env[1], env[0]

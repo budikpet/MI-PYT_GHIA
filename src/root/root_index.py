@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, current_app
+from flask import Blueprint, render_template, current_app, request
 from jinja2 import Markup
 from strategy import Strategies, GhiaContext
 from my_data_classes import Rules, RuleLocation
@@ -31,3 +31,20 @@ def index():
     context = get_ghia_context()
 
     return render_template("index.html", context=get_ghia_context())
+
+@bp_root.route('/', methods=["POST"])
+def labels_hook():
+    current_app.logger.warning('labels_webhook triggered')
+    headers = request.headers
+
+    if headers.environ["HTTP_X_GITHUB_EVENT"] == "issues":
+        # Handle issues endpoint
+        current_app.logger.warning('Issues endpoint handler started.')
+        return "GHIA_CLI started."
+        print
+    elif headers.environ["HTTP_X_GITHUB_EVENT"] == "ping":
+        # Handle ping endpoint
+        current_app.logger.warning('Ping endpoint handler started.')
+        return "Triggered"
+    
+    return "Supports only issues and ping Github endpoints."
