@@ -2,6 +2,17 @@ from enum import Enum
 from typing import Set, List
 from dataclasses import dataclass, field
 
+@dataclass
+class RuleLocation():
+    name: str
+    color: str
+
+class Rules(Enum):
+    TITLE = RuleLocation(name="title", color="blue")
+    TEXT = RuleLocation(name="text", color="green")
+    LABEL = RuleLocation(name="label", color="rgb(151, 151, 48)")
+    ANY = RuleLocation(name="any", color="red")
+
 class UserStatus(Enum):
     ADD = "+"
     LEAVE = "="

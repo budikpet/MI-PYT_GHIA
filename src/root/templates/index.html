@@ -19,21 +19,23 @@
                 (<code>POST /</code>).</p>
         </div>
         <div id="labels">
-            <h2>Issue processing</h2>
+            <h2>Issues processing</h2>
 
             <p>All actions will be performed via user: {{ context.username| github_url }}</p>
 
             <ul>
-                {% for user in context.get_user_patterns(by_user=True) %}
-                    <li>{{ user }}</li>
+                {% for (user, rules) in context.get_user_patterns(by_user=True).items() %}
+                    <li>{{ user| github_url }}</li>
                     <ul>
-                        <li>test</li>
+                        {% for rule in rules %}
+                            <li>{{ rule[0] | in_block }} <code>{{ rule[1] }}</code></li>
+                        {% endfor %}
                     </ul>
                 {% endfor %}
             </ul>
 
 
-            <p>Issues without any assignment will be labeled {{ context.get_fallback_label() }}</p>
+            <p>Issues without any assignment will be labeled {{ context.get_fallback_label() | in_block }}</p>
         </div>
         <div id="usage">
             <h2>Service usage</h2>
