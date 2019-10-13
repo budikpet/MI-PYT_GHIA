@@ -35,7 +35,11 @@
             </ul>
 
 
-            <p>Issues without any assignment will be labeled {{ context.get_fallback_label() | in_block }}</p>
+            {% if context.get_fallback_label() != "" %}
+                <p>Issues without any assignment will be labeled {{ context.get_fallback_label() | in_block }}</p>
+            {% else %}
+                <p>Issues without any assignment won't be labeled.</p>
+            {% endif %}
         </div>
         <div id="usage">
             <h2>Service usage</h2>
