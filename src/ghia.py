@@ -3,10 +3,10 @@ import validator
 import requests
 import os
 from flask import Flask, render_template
+from typing import Tuple
 from strategy import Strategies, GhiaContext
 from ghia_cli_logic import ghia_run
-from strategy import GhiaContext
-from typing import Tuple
+from root.root_index import bp_root
 
 # Pro testování webhook buď nasadit na pythonanywhere, nebo použít https://requestbin.com/
 
@@ -48,14 +48,11 @@ def create_app(config=None):
 	config_auth, config_rules = get_configs()
 	context = get_context(config_auth, config_rules)
 
-	# app.config.from_pyfile(config or 'config.py')
-	# app.config['the_answer'] = 42
+	app.config["GHIA_CONTEXT"] = context
 	app.secret_key = context.get_secret()
-	
-	# TODO: Use blueprint to separate routes
-	@app.route('/')
-	def index():
-		return render_template("index.html")
+	app.register_blueprint(bp_root, url_prefix="/")
+
+	# app.config.from_pyfile(config or 'config.py')
 
 	return app
 

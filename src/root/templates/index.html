@@ -10,8 +10,6 @@
     </header>
     <hr>
     <article id="content">
-        <h1>zzzzz</h1>
-
         <div id="intro">
             <h2>Introduction</h2>
 
@@ -21,7 +19,9 @@
                 (<code>POST /</code>).</p>
         </div>
         <div id="labels">
+            <h2>Issue processing</h2>
 
+            <p>All actions will be performed via user: {{ context.username| github_url }}</p>
         </div>
         <div id="usage">
             <h2>Service usage</h2>
@@ -43,7 +43,7 @@
 
             <dl>
                 <dt>Payload URL</dt>
-                <dd>http://mareksuchanek.pythonanywhere.com/</dd>
+                <dd>http://{{ context.username }}.pythonanywhere.com/</dd>
                 <dt>Content type</dt>
                 <dd>application/json</dd>
                 <dt>Secret</dt>
@@ -58,7 +58,7 @@
     </article>
     <hr>
     <footer class="text-muted">
-        Marek Suchánek &amp; Miro Hrončok (for <a href="https://github.com/cvut/MI-PYT/" target="_blank">MI-PYT</a>)
+        Made by {{ context.username }} (for <a href="https://github.com/cvut/MI-PYT/" target="_blank">MI-PYT</a>)
         &copy; 2018
     </footer>
 </main>
