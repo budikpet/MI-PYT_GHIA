@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<main class="container">
+    <header>
+        <h1>
+            GHIA
+            <small class="text-muted">GitHub Issues Assigner</small>
+        </h1>
+    </header>
+    <hr>
+    <article id="content">
+        <h1>zzzzz</h1>
+
+        <div id="intro">
+            <h2>Introduction</h2>
+
+            <p>This simple service uses GitHub webhooks to catch updates of issues and changes assignees according
+                to preconfigured patterns. It is mainly homework for MI-PYT course, but can be actually quite useful
+                although it consists only of this info page (<code>GET /</code>) and webhook listener
+                (<code>POST /</code>).</p>
+        </div>
+        <div id="labels">
+
+        </div>
+        <div id="usage">
+            <h2>Service usage</h2>
+
+            <p>To manage PRs of your repo by this service you need to know configured <em>webhook secret</em>, then
+                just:</p>
+
+            <ol>
+                <li>Go to your repository settings at GitHub</li>
+                <li>Pick <em>webhooks</em> from left menu</li>
+                <li>Press <em>Add webhook</em></li>
+                <li>Create webhook with configuration below and press <em>Add webhook</em></li>
+            </ol>
+
+            For more information, visit <a href="https://developer.github.com/webhooks/creating/" target="_blank">GitHub
+                documentation</a>.
+
+            <h3>Webhook configuration</h3>
+
+            <dl>
+                <dt>Payload URL</dt>
+                <dd>http://mareksuchanek.pythonanywhere.com/</dd>
+                <dt>Content type</dt>
+                <dd>application/json</dd>
+                <dt>Secret</dt>
+                <dd><em>webhook secret</em> (cannot be published)</dd>
+                <dt>Which events would you like to trigger this webhook?</dt>
+                <dd>Let me select individual events: <strong>Issues</strong></dd>
+                <dt>Active</dt>
+                <dd>Yes</dd>
+            </dl>
+        </div>
+
+    </article>
+    <hr>
+    <footer class="text-muted">
+        Marek Suchánek &amp; Miro Hrončok (for <a href="https://github.com/cvut/MI-PYT/" target="_blank">MI-PYT</a>)
+        &copy; 2018
+    </footer>
+</main>
+{% endblock %}

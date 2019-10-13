@@ -9,7 +9,6 @@ from strategy import GhiaContext
 from typing import Tuple
 
 # Pro testování webhook buď nasadit na pythonanywhere, nebo použít https://requestbin.com/
-# GHIA_CONFIG = /Users/petr/Documents/Projects/Python/MI-PYT_GHIA/src/credentials.cfg:/Users/petr/Documents/Projects/Python/MI-PYT_GHIA/src/rules.cfg
 
 def get_username(context: GhiaContext):
 	session = requests.Session()
@@ -56,7 +55,7 @@ def create_app(config=None):
 	# TODO: Use blueprint to separate routes
 	@app.route('/')
 	def index():
-		return render_template("template.html")
+		return render_template("index.html")
 
 	return app
 
