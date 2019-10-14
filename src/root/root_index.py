@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, current_app, request
+from flask import Blueprint, render_template, current_app, request, abort, Response
 from jinja2 import Markup
 from strategy import Strategies, GhiaContext
 from my_data_classes import Rules, RuleLocation
@@ -37,7 +37,6 @@ def index():
 
 def check_secret():
     headers = request.headers.environ
-    data = request.get_json()
     payload = request.data
 
     secret = current_app.config["GHIA_CONTEXT"].get_secret()
@@ -47,20 +46,19 @@ def check_secret():
     digester = hmac.new(key=key, msg=payload, digestmod=hashlib.sha1)
     signature = digester.hexdigest()
 
-    if hmac.compare_digest(str(signature), str(secret_hash)):
-        current_app.logger.warning(f"HASH: {signature} == {secret_hash}")
-    else:
-        current_app.logger.warning(f"HASH: {signature} != {secret_hash}")
-    
-    
-    print
+    if not hmac.compare_digest(str(signature), str(secret_hash)):
+        current_app.logger.warning(f"HASH_NO_MATCH: {signature} != {secret_hash}")
+        return False
+
+    return True
 
 @bp_root.route('/', methods=["POST"])
 def labels_hook():
     current_app.logger.warning('labels_webhook triggered')
     headers = request.headers
 
-    check_secret()
+    if not check_secret():
+        abort(Response(response="Secrets do not match.", status=403))
 
     if headers.environ["HTTP_X_GITHUB_EVENT"] == "issues":
         # Handle issues endpoint
