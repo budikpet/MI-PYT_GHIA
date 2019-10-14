@@ -32,6 +32,14 @@ def index():
 
     return render_template("index.html", context=get_ghia_context())
 
+def trigger_ghia_cli():
+    test = request
+    with open("data.json", "w") as data:
+        with open("headers", "w") as headersfile:
+            data.write(request.data.decode("utf-8"))
+            headersfile.writelines([f'{name, currData}\n' for name, currData in request.headers.environ.items()])
+    print
+
 @bp_root.route('/', methods=["POST"])
 def labels_hook():
     current_app.logger.warning('labels_webhook triggered')
@@ -40,11 +48,11 @@ def labels_hook():
     if headers.environ["HTTP_X_GITHUB_EVENT"] == "issues":
         # Handle issues endpoint
         current_app.logger.warning('Issues endpoint handler started.')
+        trigger_ghia_cli()
         return "GHIA_CLI started."
-        print
     elif headers.environ["HTTP_X_GITHUB_EVENT"] == "ping":
         # Handle ping endpoint
         current_app.logger.warning('Ping endpoint handler started.')
-        return "Triggered"
+        return "I was pinged. I am triggered now."
     
     return "Supports only issues and ping Github endpoints."
