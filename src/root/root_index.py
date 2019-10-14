@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, current_app, request
 from jinja2 import Markup
 from strategy import Strategies, GhiaContext
 from my_data_classes import Rules, RuleLocation
+import hmac
 
 bp_root = Blueprint('bp_root', __name__, template_folder='templates')
 
@@ -33,12 +34,12 @@ def index():
     return render_template("index.html", context=get_ghia_context())
 
 def trigger_ghia_cli():
-    test = request
-    current_app.logger.warning(test)
-    with open("data.json", "w") as data:
-        with open("headers", "w") as headersfile:
-            data.write(request.data.decode("utf-8"))
-            headersfile.writelines([f'{name, currData}\n' for name, currData in request.headers.environ.items()])
+    headers = request.headers.environ
+    data_dict = request.form.to_dict()
+
+    secret_hash = headers["HTTP_HTTP_X_HUB_SIGNATURE"]
+    
+    
     print
 
 @bp_root.route('/', methods=["POST"])
