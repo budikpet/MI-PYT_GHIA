@@ -37,9 +37,8 @@ def index():
 
 def check_secret():
     headers = request.headers.environ
-    data = request.form
-    data_dict = data.to_dict()
-    payload = json.dumps(data).encode("utf-8")
+    data = request.get_json()
+    payload = request.data
 
     secret = current_app.config["GHIA_CONTEXT"].get_secret()
     secret_hash = headers.get("HTTP_X_HUB_SIGNATURE").split("=")[1]
