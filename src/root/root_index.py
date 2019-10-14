@@ -3,6 +3,8 @@ from jinja2 import Markup
 from strategy import Strategies, GhiaContext
 from my_data_classes import Rules, RuleLocation
 import hmac
+import hashlib
+import json
 
 bp_root = Blueprint('bp_root', __name__, template_folder='templates')
 
@@ -33,11 +35,23 @@ def index():
 
     return render_template("index.html", context=get_ghia_context())
 
-def trigger_ghia_cli():
+def check_secret():
     headers = request.headers.environ
-    data_dict = request.form.to_dict()
+    data = request.form
+    data_dict = data.to_dict()
+    payload = json.dumps(data).encode("utf-8")
 
-    secret_hash = headers["HTTP_HTTP_X_HUB_SIGNATURE"]
+    secret = current_app.config["GHIA_CONTEXT"].get_secret()
+    secret_hash = headers.get("HTTP_X_HUB_SIGNATURE").split("=")[1]
+
+    key = bytes(secret, 'utf-8')
+    digester = hmac.new(key=key, msg=payload, digestmod=hashlib.sha1)
+    signature = digester.hexdigest()
+
+    if hmac.compare_digest(str(signature), str(secret_hash)):
+        current_app.logger.warning(f"HASH: {signature} == {secret_hash}")
+    else:
+        current_app.logger.warning(f"HASH: {signature} != {secret_hash}")
     
     
     print
@@ -47,10 +61,12 @@ def labels_hook():
     current_app.logger.warning('labels_webhook triggered')
     headers = request.headers
 
+    check_secret()
+
     if headers.environ["HTTP_X_GITHUB_EVENT"] == "issues":
         # Handle issues endpoint
         current_app.logger.warning('Issues endpoint handler started.')
-        trigger_ghia_cli()
+        # trigger_ghia_cli()
         return "GHIA_CLI started."
     elif headers.environ["HTTP_X_GITHUB_EVENT"] == "ping":
         # Handle ping endpoint
