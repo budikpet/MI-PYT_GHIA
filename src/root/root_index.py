@@ -34,6 +34,7 @@ def index():
 
 def trigger_ghia_cli():
     test = request
+    current_app.logger.warning(test)
     with open("data.json", "w") as data:
         with open("headers", "w") as headersfile:
             data.write(request.data.decode("utf-8"))
