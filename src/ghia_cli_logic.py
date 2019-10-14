@@ -117,10 +117,8 @@ def group_users(context: GhiaContext, issue):
 	# Prepare output
 	return context.strategy.get_grouped_users(users_automatched, already_assigned_users)
 
-def ghia_run(strategy, dry_run, config_auth, config_rules, reposlug):
+def ghia_run(context: GhiaContext):
 	"""Run GHIA algorighm to automatically assign GitHub issues"""
-
-	context = GhiaContext("https://api.github.com", strategy, dry_run, config_auth, config_rules, reposlug)
 
 	# Load issues
 	context.session = requests.Session()

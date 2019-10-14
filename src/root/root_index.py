@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, current_app, request, abort, Respo
 from jinja2 import Markup
 from strategy import Strategies, GhiaContext
 from my_data_classes import Rules, RuleLocation
+from ghia_cli_logic import ghia_run
 import hmac
 import hashlib
 import json
@@ -52,22 +53,30 @@ def check_secret():
 
     return True
 
+def trigger_ghia_cli():
+    context: GhiaContext = current_app.config["GHIA_CONTEXT"]
+    
+    ghia_run(context)
+    print
+
 @bp_root.route('/', methods=["POST"])
 def labels_hook():
     current_app.logger.warning('labels_webhook triggered')
     headers = request.headers
 
-    if not check_secret():
+    # if not check_secret():
+    if False == True:    #TODO: Remove
         abort(Response(response="Secrets do not match.", status=403))
+    elif request.content_type != "application/json":
+        abort(Response(response="Accepts only JSON.", status=400))
 
     if headers.environ["HTTP_X_GITHUB_EVENT"] == "issues":
         # Handle issues endpoint
         current_app.logger.warning('Issues endpoint handler started.')
-        # trigger_ghia_cli()
-        return "GHIA_CLI started."
+        trigger_ghia_cli()
+        return "GHIA_CLI changed issues according to rules."
     elif headers.environ["HTTP_X_GITHUB_EVENT"] == "ping":
         # Handle ping endpoint
-        current_app.logger.warning('Ping endpoint handler started.')
         return "I was pinged. I am triggered now."
     
-    return "Supports only issues and ping Github endpoints."
+    return "Supports only Github endpoints these github endpoints: [issues, ping]"

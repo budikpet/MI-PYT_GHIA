@@ -66,7 +66,9 @@ inputStrategies = [strategy.name.lower() for strategy in Strategies]
 @click.argument('REPOSLUG', callback=validator.validateReposlug, required=True)
 def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 	"""CLI tool for automatic issue assigning of GitHub issues"""
-	ghia_run(strategy, dry_run, config_auth, config_rules, reposlug)
+	context = GhiaContext("https://api.github.com", strategy, dry_run, config_auth, config_rules, reposlug)
+
+	ghia_run(context)
 	
 # Toto bude použito při zavolání z CLI
 if __name__ == '__main__':
