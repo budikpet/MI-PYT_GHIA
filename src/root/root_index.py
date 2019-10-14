@@ -64,8 +64,8 @@ def labels_hook():
     current_app.logger.warning('labels_webhook triggered')
     headers = request.headers
 
-    # if not check_secret():
-    if False == True:    #TODO: Remove
+    if not check_secret():
+    # if False == True:    #TODO: Remove
         abort(Response(response="Secrets do not match.", status=403))
     elif request.content_type != "application/json":
         abort(Response(response="Accepts only JSON.", status=400))

@@ -20,6 +20,7 @@ class UserStatus(Enum):
 
 @dataclass
 class GroupedUsers():
+    users_found_by_rules: bool
     users_automatched: Set[str] = field(default_factory=set)
     users_to_leave: Set[str] = field(default_factory=set)
     users_to_remove: Set[str] = field(default_factory=set)

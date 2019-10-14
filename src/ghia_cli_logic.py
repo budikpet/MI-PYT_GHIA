@@ -19,7 +19,7 @@ def get_output_data(context: GhiaContext, issue, grouped_users: GroupedUsers):
 		data = {
 			"assignees": grouped_users.get_users_to_assign()
 		}
-	elif context.get_fallback_label() != "" and not has_fallback_label(issue, context):
+	elif not grouped_users.users_found_by_rules and context.get_fallback_label() != "" and not has_fallback_label(issue, context):
 		labels = [context.get_fallback_label()]
 		labels.extend([label["name"] for label in issue["labels"]])
 		data = {

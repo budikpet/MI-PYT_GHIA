@@ -46,19 +46,25 @@ class GhiaStrategy():
 
 class AppendStrategy(GhiaStrategy):
     def get_grouped_users(self, users_automatched: Set[str], users_already_assigned: Set[str]) -> GroupedUsers:
-        return GroupedUsers(users_automatched=users_automatched.difference(users_already_assigned), 
+        users_found = len(users_automatched) != 0
+        return GroupedUsers(users_found_by_rules=users_found, 
+            users_automatched=users_automatched.difference(users_already_assigned), 
             users_to_leave=users_already_assigned,
             users_to_remove=set())
 
 class SetStrategy(GhiaStrategy):
     def get_grouped_users(self, users_automatched: Set[str], users_already_assigned: Set[str]) -> GroupedUsers:
-        return GroupedUsers(users_automatched=users_automatched, 
+        users_found = len(users_automatched) != 0
+        return GroupedUsers(users_found_by_rules=users_found,
+            users_automatched=users_automatched, 
             users_to_leave=users_already_assigned,
             users_to_remove=set())
 
 class ChangeStrategy(GhiaStrategy):
     def get_grouped_users(self, users_automatched: Set[str], users_already_assigned: Set[str]) -> GroupedUsers:
-        return GroupedUsers(users_automatched=users_automatched.difference(users_already_assigned), 
+        users_found = len(users_automatched) != 0
+        return GroupedUsers(users_found_by_rules=users_found,
+            users_automatched=users_automatched.difference(users_already_assigned), 
             users_to_leave=users_already_assigned.intersection(users_automatched),
             users_to_remove=users_already_assigned.difference(users_automatched))
 
