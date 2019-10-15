@@ -9,7 +9,7 @@ class ConfigData:
         if github.get("secret") is not None:
             self.secret = github["secret"]
         else:
-            self.secret = ""
+            self.secret = None
         
         self.load_rules(config_rules)
         
@@ -28,7 +28,7 @@ class ConfigData:
         if 'fallback' in config_rules:
             self.fallback_label = config_rules['fallback']['label']
         else:
-            self.fallback_label = ""
+            self.fallback_label = None
 
         users = config_rules["patterns"]
         for user in users:

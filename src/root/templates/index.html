@@ -35,7 +35,7 @@
             </ul>
 
 
-            {% if context.get_fallback_label() != "" %}
+            {% if context.get_fallback_label() is not none %}
                 <p>Issues without any assignment will be labeled {{ context.get_fallback_label() | in_block }}</p>
             {% else %}
                 <p>Issues without any assignment won't be labeled.</p>

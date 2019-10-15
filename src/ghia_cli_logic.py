@@ -19,7 +19,7 @@ def get_output_data(context: GhiaContext, issue, grouped_users: GroupedUsers):
 		data = {
 			"assignees": grouped_users.get_users_to_assign()
 		}
-	elif not grouped_users.users_found_by_rules and context.get_fallback_label() != "" and not has_fallback_label(issue, context):
+	elif not grouped_users.users_found_by_rules and context.get_fallback_label() is not None and not has_fallback_label(issue, context):
 		labels = [context.get_fallback_label()]
 		labels.extend([label["name"] for label in issue["labels"]])
 		data = {
@@ -77,7 +77,7 @@ def write_output(context: GhiaContext, issue, grouped_users: GroupedUsers, statu
 		if grouped_users.has_users() != 0:
 			for (user_status, user) in grouped_users.get_output_list():
 				write_user(user_status, user)
-		elif context.get_fallback_label() != "":
+		elif context.get_fallback_label() is not None:
 			write_label(issue, context)
 
 	print

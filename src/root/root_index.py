@@ -36,11 +36,11 @@ def index():
 
     return render_template("index.html", context=get_ghia_context())
 
-def check_secret():
+def check_secret(context: GhiaContext):
     headers = request.headers.environ
     payload = request.data
 
-    secret = current_app.config["GHIA_CONTEXT"].get_secret()
+    secret = context.get_secret()
     secret_hash = headers.get("HTTP_X_HUB_SIGNATURE").split("=")[1]
 
     key = bytes(secret, 'utf-8')
@@ -53,18 +53,13 @@ def check_secret():
 
     return True
 
-def trigger_ghia_cli():
-    context: GhiaContext = current_app.config["GHIA_CONTEXT"]
-    
-    ghia_run(context)
-    print
-
 @bp_root.route('/', methods=["POST"])
 def labels_hook():
     current_app.logger.warning('labels_webhook triggered')
     headers = request.headers
+    context: GhiaContext = get_ghia_context()
 
-    if not check_secret():
+    if context.get_secret() is not None and not check_secret(context):
     # if False == True:    #TODO: Remove
         abort(Response(response="Secrets do not match.", status=403))
     elif request.content_type != "application/json":
@@ -73,7 +68,7 @@ def labels_hook():
     if headers.environ["HTTP_X_GITHUB_EVENT"] == "issues":
         # Handle issues endpoint
         current_app.logger.warning('Issues endpoint handler started.')
-        trigger_ghia_cli()
+        ghia_run(context)
         return "GHIA_CLI changed issues according to rules."
     elif headers.environ["HTTP_X_GITHUB_EVENT"] == "ping":
         # Handle ping endpoint
