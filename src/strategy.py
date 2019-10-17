@@ -40,6 +40,11 @@ class GhiaContext():
             print(msg)
             raise ValueError(msg)
 
+    def get_trigger_actions(self):
+        return self.config_data.trigger_actions
+
+    
+
 class GhiaStrategy():
     def get_grouped_users(self, users_automatched: Set[str], users_already_assigned: Set[str]) -> GroupedUsers:
         pass

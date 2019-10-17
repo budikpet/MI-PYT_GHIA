@@ -69,7 +69,7 @@ def labels_hook():
     if context.reposlug is None or context.reposlug != new_reposlug:
         context.reposlug = new_reposlug
 
-    if headers.environ["HTTP_X_GITHUB_EVENT"] == "issues":
+    if headers.environ["HTTP_X_GITHUB_EVENT"] == "issues" and request.json["action"] in context.get_trigger_actions():
         # Handle issues endpoint
         current_app.logger.warning('Issues endpoint handler started.')
         ghia_run(context)
