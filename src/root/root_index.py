@@ -69,9 +69,13 @@ def labels_hook():
     if context.reposlug is None or context.reposlug != new_reposlug:
         context.reposlug = new_reposlug
 
-    if headers.environ["HTTP_X_GITHUB_EVENT"] == "issues" and request.json["action"] in context.get_trigger_actions():
+    if headers.environ["HTTP_X_GITHUB_EVENT"] == "issues":
         # Handle issues endpoint
         current_app.logger.warning('Issues endpoint handler started.')
+
+        if request.json["action"] in context.get_trigger_actions() or request.json["state"] != "open":
+            return "This issue doesn't need to be checked."
+
         number = request.json["issue"]["number"]
         ghia_run(context, number)
         return "GHIA_CLI changed issues according to rules."

@@ -132,8 +132,8 @@ def ghia_run(context: GhiaContext, issue_number: int = None):
 		'per_page': 50
 	}
 
-	xstr = lambda s: '' if s is None else str(s)
-	r = context.session.get(f'{context.base}/repos/{context.get_reposlug()}/issues/{xstr(issue_number)}')
+	xstr = lambda s: '' if s is None else f'/{str(s)}'
+	r = context.session.get(f'{context.base}/repos/{context.get_reposlug()}/issues{xstr(issue_number)}')
 
 	while True:
 		issues = list()
