@@ -73,7 +73,7 @@ def labels_hook():
         # Handle issues endpoint
         current_app.logger.warning('Issues endpoint handler started.')
 
-        if request.json["action"] in context.get_trigger_actions() or request.json["state"] != "open":
+        if request.json["action"] not in context.get_trigger_actions() or request.json["state"] != "open":
             return "This issue doesn't need to be checked."
 
         number = request.json["issue"]["number"]
