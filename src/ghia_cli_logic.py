@@ -117,7 +117,7 @@ def group_users(context: GhiaContext, issue):
 	# Prepare output
 	return context.strategy.get_grouped_users(users_automatched, already_assigned_users)
 
-def ghia_run(context: GhiaContext):
+def ghia_run(context: GhiaContext, issue_number: int = None):
 	"""Run GHIA algorighm to automatically assign GitHub issues"""
 
 	# Load issues
@@ -132,10 +132,15 @@ def ghia_run(context: GhiaContext):
 		'per_page': 50
 	}
 
-	r = context.session.get(f'{context.base}/repos/{context.get_reposlug()}/issues')
+	xstr = lambda s: '' if s is None else str(s)
+	r = context.session.get(f'{context.base}/repos/{context.get_reposlug()}/issues/{xstr(issue_number)}')
 
 	while True:
-		issues = r.json()
+		issues = list()
+		if issue_number is None:
+			issues = r.json()
+		else:
+			issues.append(r.json())
 
 		if r.status_code != 200:
 			click.echo(f'{click.style("ERROR", fg="red")}: Could not list issues for repository {context.get_reposlug()}', err=True)

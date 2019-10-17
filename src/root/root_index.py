@@ -72,7 +72,8 @@ def labels_hook():
     if headers.environ["HTTP_X_GITHUB_EVENT"] == "issues" and request.json["action"] in context.get_trigger_actions():
         # Handle issues endpoint
         current_app.logger.warning('Issues endpoint handler started.')
-        ghia_run(context)
+        number = request.json["issue"]["number"]
+        ghia_run(context, number)
         return "GHIA_CLI changed issues according to rules."
     elif headers.environ["HTTP_X_GITHUB_EVENT"] == "ping":
         # Handle ping endpoint
