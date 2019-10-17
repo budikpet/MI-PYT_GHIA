@@ -30,7 +30,6 @@ def get_context(config_auth, config_rules) -> GhiaContext:
 			context = GhiaContext("https://api.github.com", Strategies.APPEND.name, False, dataAuth, dataRules)
 
 	context.username = get_username(context)
-	context.reposlug = f"mi-pyt-ghia/{context.username}-web"
 
 	return context
 

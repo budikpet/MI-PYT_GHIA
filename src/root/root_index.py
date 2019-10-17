@@ -65,6 +65,10 @@ def labels_hook():
     elif request.content_type != "application/json":
         abort(Response(response="Accepts only JSON.", status=400))
 
+    new_reposlug = request.json["repository"]["full_name"]
+    if context.reposlug is None or context.reposlug != new_reposlug:
+        context.reposlug = new_reposlug
+
     if headers.environ["HTTP_X_GITHUB_EVENT"] == "issues":
         # Handle issues endpoint
         current_app.logger.warning('Issues endpoint handler started.')
