@@ -1,6 +1,6 @@
 from enum import Enum
-from github.config_data import ConfigData
-from github.my_data_classes import GroupedUsers, UserStatus
+from ghia.github.config_data import ConfigData
+from ghia.github.my_data_classes import GroupedUsers, UserStatus
 import requests
 import click
 from typing import Set, List
