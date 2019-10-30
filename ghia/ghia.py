@@ -1,12 +1,12 @@
 import click
-import validator
 import requests
 import os
 from flask import Flask, render_template
 from typing import Tuple
-from strategy import Strategies, GhiaContext
-from ghia_cli_logic import ghia_run
-from root.root_index import bp_root
+from cli import validator
+from cli.strategy import Strategies, GhiaContext
+from cli.ghia_cli_logic import ghia_run
+from web.root.root_index import bp_root
 
 # Pro testování webhook buď nasadit na pythonanywhere, nebo použít https://requestbin.com/
 
@@ -70,5 +70,5 @@ def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 	ghia_run(context)
 	
 # Toto bude použito při zavolání z CLI
-if __name__ == '__main__':
+def main():
 	ghia()	# pylint: disable=no-value-for-parameter

@@ -1,6 +1,6 @@
 from enum import Enum
-from config_data import ConfigData
-from my_data_classes import GroupedUsers, UserStatus
+from github.config_data import ConfigData
+from github.my_data_classes import GroupedUsers, UserStatus
 import requests
 import click
 from typing import Set, List
