@@ -11,7 +11,7 @@ import sys
 def run(line, **kwargs):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     dir_path = os.path.dirname(dir_path)
-    command = [sys.executable, f"{dir_path}/src/ghia.py"] + shlex.split(line)
+    command = [sys.executable, f"{dir_path}/ghia/ghia.py"] + shlex.split(line)
     return subprocess.run(command,
                           stdout=subprocess.PIPE,
                           stderr=subprocess.PIPE,

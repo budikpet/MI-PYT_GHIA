@@ -9,16 +9,16 @@
             "name": "Python run GHIA",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/src/ghia.py",
-            "args": ["--dry-run", "-s", "append", "-a", "src/credentials.cfg", "-r", "src/rules.cfg", "mi-pyt-ghia/budikpet"],
+            "module": "ghia",
+            "args": ["--dry-run", "-s", "append", "-a", "ghia/credentials.cfg", "-r", "ghia/rules.cfg", "mi-pyt-ghia/budikpet"],
             "console": "integratedTerminal"
         },
         {
             "name": "Python test GHIA",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/src/ghia.py",
-            "args": ["--dry-run", "-s", "append", "-a", "src/credentials.cfg", "-r", "tests/fixtures/rules.reset.cfg", "mi-pyt-ghia/budikpet"],
+            "module": "ghia",
+            "args": ["--dry-run", "-s", "append", "-a", "ghia/credentials.cfg", "-r", "tests/fixtures/rules.reset.cfg", "mi-pyt-ghia/budikpet"],
             "console": "integratedTerminal"
         },
         {
