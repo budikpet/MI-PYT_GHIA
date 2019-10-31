@@ -20,4 +20,8 @@ setup(
             'ghia = ghia.ghia:main',
         ],
     },
+    package_data={
+        'ghia.web': ['templates/*.html', 'static/*.css'],
+        'ghia.web.root': ['templates/*.html']
+        },
 )
