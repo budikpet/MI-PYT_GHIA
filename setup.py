@@ -17,7 +17,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'ghia = ghia.ghia_runner:main',
+            'ghia = ghia.ghia:main',
         ],
     },
 )
