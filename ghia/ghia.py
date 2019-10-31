@@ -3,8 +3,8 @@ from flask import Flask
 from typing import Tuple
 from ghia.cli import validator
 from ghia.cli.strategy import Strategies, GhiaContext
-from ghia.cli.ghia_cli_logic import ghia_run
-from ghia.web import ghia_web_logic
+from ghia.ghia_cli_logic import ghia_run
+from ghia import ghia_web_logic
 
 def create_app(config=None):
 	return ghia_web_logic.create_app(config=config)

@@ -21,8 +21,7 @@ setup(
         ],
     },
     package_data={
-        'ghia.web': ['templates/*.html', 'static/*.css'],
-        'ghia.web.root': ['templates/*.html']
+        'ghia': ['templates/*.html', 'static/*.css']
         },
     classifiers=[
         'Intended Audience :: Developers',

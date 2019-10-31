@@ -6,7 +6,7 @@ import json
 from enum import Enum
 from ghia.github.config_data import ConfigData
 from ghia.github.my_data_classes import GroupedUsers, UserStatus
-from .strategy import GhiaContext
+from ghia.cli.strategy import GhiaContext
 
 def has_fallback_label(issue, context):
 	existing_labels = [label for label in issue["labels"] if label["name"] == context.get_fallback_label()]

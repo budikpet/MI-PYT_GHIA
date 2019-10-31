@@ -5,7 +5,7 @@ import hashlib
 import json
 from ghia.cli.strategy import Strategies, GhiaContext
 from ghia.github.my_data_classes import Rules, RuleLocation
-from ghia.cli.ghia_cli_logic import ghia_run
+from ghia.ghia_cli_logic import ghia_run
 
 bp_root = Blueprint('bp_root', __name__, template_folder='templates')
 
