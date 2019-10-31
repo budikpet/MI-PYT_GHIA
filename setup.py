@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setup(
     name='ghia_budikpet',
-    version='0.3.1',
+    version='0.3.2',
     description='GHIA CLI and web app tutorial.',
     long_description=long_description,
     keywords="ghia,budikpet, web, cli",
@@ -20,12 +20,13 @@ setup(
             'ghia = ghia.ghia:main',
         ],
     },
+    include_package_data=True,
     package_data={
         'ghia': ['templates/*.html', 'static/*.css']
         },
     classifiers=[
         'Intended Audience :: Developers',
-        'License :: MIT',
+        'License :: Public Domain',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python',
         'Programming Language :: Python :: Implementation :: CPython',
