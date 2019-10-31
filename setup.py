@@ -8,7 +8,7 @@ setup(
     version='0.3.1',
     description='GHIA CLI and web app tutorial.',
     long_description=long_description,
-    keywords="ghia,budikpet",
+    keywords="ghia,budikpet, web, cli",
     install_requires=['Flask', 'click>=6', 'requests'],
     author='Petr Budík',
     author_email='budikpet@fit.cvut.cz',
