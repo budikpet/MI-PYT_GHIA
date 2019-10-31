@@ -5,7 +5,7 @@ from typing import Tuple
 from ghia.cli import validator
 from ghia.cli.strategy import Strategies, GhiaContext
 from ghia.cli.ghia_cli_logic import ghia_run
-from .root.root_index import bp_root
+from ghia.web.root.root_index import bp_root
 
 def get_username(context: GhiaContext):
 	session = requests.Session()

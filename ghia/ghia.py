@@ -1,10 +1,10 @@
 import click
 from flask import Flask
 from typing import Tuple
-from .cli import validator
-from .cli.strategy import Strategies, GhiaContext
-from .cli.ghia_cli_logic import ghia_run
-from .web import ghia_web_logic
+from cli import validator
+from cli.strategy import Strategies, GhiaContext
+from cli.ghia_cli_logic import ghia_run
+from web import ghia_web_logic
 
 def create_app(config=None):
 	return ghia_web_logic.create_app(config=config)
