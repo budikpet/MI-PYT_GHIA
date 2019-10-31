@@ -24,4 +24,15 @@ setup(
         'ghia.web': ['templates/*.html', 'static/*.css'],
         'ghia.web.root': ['templates/*.html']
         },
+    classifiers=[
+        'Intended Audience :: Developers',
+        'License :: MIT',
+        'Operating System :: POSIX :: Linux',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: Implementation :: CPython',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Topic :: Software Development :: Libraries',
+        ],
 )
