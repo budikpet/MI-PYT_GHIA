@@ -1,3 +1,3 @@
-from .ghia import main
+from .ghia_runner import main
 
 main()

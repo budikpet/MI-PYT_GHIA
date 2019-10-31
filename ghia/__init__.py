@@ -1,3 +1,3 @@
-from ghia import ghia
+from ghia import ghia_runner
 
-__all__ = ["ghia"]
+__all__ = ["ghia_runner"]
