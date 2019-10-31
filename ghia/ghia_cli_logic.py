@@ -3,10 +3,10 @@ import requests
 import re
 import sys
 import json
-from my_data_classes import GroupedUsers, UserStatus
-from strategy import Strategies, GhiaContext, GhiaStrategy
 from enum import Enum
-from config_data import ConfigData
+from ghia.github.config_data import ConfigData
+from ghia.github.my_data_classes import GroupedUsers, UserStatus
+from ghia.cli.strategy import GhiaContext
 
 def has_fallback_label(issue, context):
 	existing_labels = [label for label in issue["labels"] if label["name"] == context.get_fallback_label()]

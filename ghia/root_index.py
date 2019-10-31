@@ -1,11 +1,11 @@
 from flask import Blueprint, render_template, current_app, request, abort, Response
 from jinja2 import Markup
-from strategy import Strategies, GhiaContext
-from my_data_classes import Rules, RuleLocation
-from ghia_cli_logic import ghia_run
 import hmac
 import hashlib
 import json
+from ghia.cli.strategy import Strategies, GhiaContext
+from ghia.github.my_data_classes import Rules, RuleLocation
+from ghia.ghia_cli_logic import ghia_run
 
 bp_root = Blueprint('bp_root', __name__, template_folder='templates')
 
@@ -32,8 +32,6 @@ def convert_time(username: str):
 
 @bp_root.route('/')
 def index():
-    context = get_ghia_context()
-
     return render_template("index.html", context=get_ghia_context())
 
 def check_secret(context: GhiaContext):

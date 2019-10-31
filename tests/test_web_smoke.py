@@ -11,8 +11,7 @@ def _import_app():
     import ghia
     importlib.reload(ghia)  # force reload (config could change)
     if hasattr(ghia, 'app'):
-        print
-        # return ghia.app
+        return ghia.app
     elif hasattr(ghia, 'create_app'):
         return ghia.create_app(None)
     else:
