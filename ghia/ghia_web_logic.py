@@ -39,7 +39,7 @@ def get_configs() -> Tuple[str, str]:
 		return env[0], env[1]
 
 def create_app(config=None):
-	app = Flask(__name__)
+	app = Flask(__name__, template_folder="/Users/petr/Documents/Projects/Python/MI-PYT_GHIA/ghia/templates")
 
 	config_auth, config_rules = get_configs()
 	context = get_context(config_auth, config_rules)
