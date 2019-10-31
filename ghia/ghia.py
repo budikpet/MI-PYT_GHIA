@@ -9,8 +9,8 @@ from .web import ghia_web_logic
 def create_app(config=None):
 	return ghia_web_logic.create_app(config=config)
 
-############################  CLI ###################################
 inputStrategies = [strategy.name.lower() for strategy in Strategies]
+
 @click.command()
 @click.option('-s', '--strategy', type=click.Choice(inputStrategies, case_sensitive=False), default=inputStrategies[0], help='How to handle assignment collisions.', show_default=True)
 @click.option('-d', '--dry-run', is_flag=True, help='Run without making any changes.')
