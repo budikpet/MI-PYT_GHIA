@@ -27,7 +27,7 @@
             "request": "launch",
             "module": "flask",
             "env": {
-                "FLASK_APP": "ghia.py",
+                "FLASK_APP": "ghia_runner.py",
                 "FLASK_ENV": "development",
                 "FLASK_DEBUG": "0"
             },

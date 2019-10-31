@@ -23,6 +23,7 @@ def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 
 	ghia_run(context)
 	
-# Toto bude použito při zavolání z CLI
+# This function will be used as a default call
 def main():
-	ghia()	# pylint: disable=no-value-for-parameter
+	# This way the programme is always called "ghia" in help
+	ghia(prog_name="ghia")	# pylint: disable=no-value-for-parameter,unexpected-keyword-arg
