@@ -11,6 +11,7 @@ setup(
     keywords="ghia,budikpet, web, cli",
     install_requires=['Flask', 'click>=6', 'requests', 'pytest-runner'],
     tests_require=['pytest', 'betamax'],
+    python_requires='>=3.7',
     author='Petr Budík',
     author_email='budikpet@fit.cvut.cz',
     license='Public Domain',
