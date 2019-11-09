@@ -2,17 +2,18 @@ from configparser import ConfigParser
 
 class ConfigData:
     
-    def __init__(self, config_auth, config_rules):
+    def __init__(self, config_auth, config_rules = None):
         github = config_auth["github"]
         self.token = github["token"]
     
         # Value or None
         self.secret = github.get("secret")
         
-        self.load_rules(config_rules)
+        if config_rules is not None:
+            self.load_rules(config_rules)
 
-        if "other" in config_rules:
-            self.trigger_actions = config_rules["other"].get("trigger_actions").replace(" ", "").split(",")
+            if "other" in config_rules:
+                self.trigger_actions = config_rules["other"].get("trigger_actions").replace(" ", "").split(",")
 
     # 
     # Loads fallback label name and user_patterns data: 

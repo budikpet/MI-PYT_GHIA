@@ -121,7 +121,6 @@ def ghia_run(context: GhiaContext, issue_number: int = None):
 	"""Run GHIA algorighm to automatically assign GitHub issues"""
 
 	# Load issues
-	context.session = requests.Session()
 	context.session.headers = {
 		'User-Agent': 'Python',
 		'Authorization': f'token {context.get_token()}',

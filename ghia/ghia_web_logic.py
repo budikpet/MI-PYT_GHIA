@@ -6,6 +6,7 @@ from ghia.cli import validator
 from ghia.cli.strategy import Strategies, GhiaContext
 from ghia.ghia_cli_logic import ghia_run
 from ghia.root_index import bp_root
+from ghia.github import util
 
 def get_username(context: GhiaContext):
 	session = requests.Session()
@@ -30,18 +31,10 @@ def get_context(config_auth, config_rules) -> GhiaContext:
 
 	return context
 
-def get_configs() -> Tuple[str, str]:
-	env = os.getenv("GHIA_CONFIG").split(":")
-
-	if "rules" in env[0]:
-		return env[1], env[0]
-	else:
-		return env[0], env[1]
-
 def create_app(config=None):
 	app = Flask(__name__, template_folder="templates")
 
-	config_auth, config_rules = get_configs()
+	config_auth, config_rules = util.get_configs()
 	context = get_context(config_auth, config_rules)
 
 	app.config["GHIA_CONTEXT"] = context

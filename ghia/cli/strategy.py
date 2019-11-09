@@ -6,12 +6,12 @@ import click
 from typing import Set, List
 
 class GhiaContext():
-    def __init__(self, base: str, strategy: str, dry_run: bool, config_auth, config_rules, reposlug: str = None):
+    def __init__(self, base: str, strategy: str, dry_run: bool, config_auth, config_rules, reposlug: str = None, session = None):
         self.base: str = base
         self.strategy: GhiaStrategy = Strategies[strategy.upper()].value
         self.dry_run: bool = dry_run
         self.reposlug: str = reposlug
-        self.session: requests.session = None
+        self.session: requests.session = session
         self.username: str = None
 
         # Get configuration

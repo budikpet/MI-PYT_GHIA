@@ -10,7 +10,7 @@
             "type": "python",
             "request": "launch",
             "module": "ghia",
-            "args": ["--dry-run", "-s", "append", "-a", "ghia/credentials.cfg", "-r", "ghia/rules.cfg", "mi-pyt-ghia/budikpet"],
+            "args": ["--dry-run", "-s", "append", "-a", "credentials.cfg", "-r", "rules.cfg", "mi-pyt-ghia/budikpet"],
             "console": "integratedTerminal"
         },
         {
@@ -18,7 +18,7 @@
             "type": "python",
             "request": "launch",
             "module": "ghia",
-            "args": ["--dry-run", "-s", "append", "-a", "ghia/credentials.cfg", "-r", "tests/fixtures/rules.reset.cfg", "mi-pyt-ghia/budikpet"],
+            "args": ["--dry-run", "-s", "append", "-a", "credentials.cfg", "-r", "tests/fixtures/rules.reset.cfg", "mi-pyt-ghia/budikpet"],
             "console": "integratedTerminal"
         },
         {
