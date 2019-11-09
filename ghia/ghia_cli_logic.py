@@ -92,7 +92,7 @@ def write_output(context: GhiaContext, issue: Issue, grouped_users: GroupedUsers
 
 	print
 
-def patternMatches(issue: Issue, location, pattern):
+def patternMatches(issue: Issue, location: str, pattern: str):
 	"""
 		Matches patterns from the rules file to issue data in appropriate issue locations (issue body, issue labels etc).
 	"""

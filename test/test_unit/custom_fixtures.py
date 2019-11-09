@@ -8,6 +8,10 @@ from ghia.github.config_data import ConfigData
 fixtures_path = f"{os.path.dirname(os.path.abspath(__file__))}/fixtures"
 tmp_credentials_path = f"{fixtures_path}/tmp_credentials.cfg"
 
+def create_tmp_credentials(TOKEN: str = "XXX", SECRET: str = "XXX"):
+    with open(tmp_credentials_path, "w+") as credentials_file:
+        credentials_file.writelines(["[github]\n", f'token={TOKEN}\n', f'secret={SECRET}\n'])
+
 with betamax.Betamax.configure() as config:
     cassettes_lib = f'{fixtures_path}/cassettes'
 
@@ -37,15 +41,13 @@ with betamax.Betamax.configure() as config:
         config.default_cassette_options['record_mode'] = 'none'
 
     # Create a temporary credentials file
-    with open(tmp_credentials_path, "w+") as credentials_file:
-        credentials_file.writelines(["[github]\n", f'token={TOKEN}\n', f'secret={SECRET}\n'])
+    create_tmp_credentials(TOKEN, SECRET)
 
     # Hide the token in the cassettes
     config.define_cassette_placeholder('<TOKEN>', TOKEN)
     config.define_cassette_placeholder('<SECRET>', SECRET)
 
-@pytest.fixture
-def context(betamax_session):
+def get_configs():
     config_auth, config_rules = ConfigParser(), ConfigParser()
     with open(f"{fixtures_path}/rules.cfg") as rules_file:
         config_rules.read_file(rules_file)
@@ -53,8 +55,20 @@ def context(betamax_session):
     with open(tmp_credentials_path) as credentials_file:
         config_auth.read_file(credentials_file)
 
-    yield GhiaContext("https://api.github.com", strategy=Strategies.APPEND.name, dry_run=True, 
+    return config_auth, config_rules
+
+@pytest.fixture
+def context(betamax_session):
+    config_auth, config_rules = get_configs()
+    
+    return GhiaContext("https://api.github.com", strategy=Strategies.APPEND.name, dry_run=True, 
         config_auth=config_auth, config_rules=config_rules, reposlug="mi-pyt-ghia/budikpet", session=betamax_session)
 
+@pytest.fixture(scope='session', autouse=True)
+def remove_credentials_file():
+    # Will be executed at the start of the whole test session
+    
+    yield True
+    # Will be executed at the end of the whole test session
     os.remove(tmp_credentials_path)
     print("Temporary credentials file removed.")

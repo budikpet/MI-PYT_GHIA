@@ -9,7 +9,7 @@ has_fallback_label = flexmock(title="DummyTitle",
     html_url="DummyUrl",
     number=1,
     assignees=["random_person"],
-    label=[fallback_label])
+    labels=[fallback_label])
 
 # No fallback label, 1 extra label and 1 random person
 no_fallback_label = flexmock(title="DummyTitle",
@@ -17,7 +17,7 @@ no_fallback_label = flexmock(title="DummyTitle",
     html_url="DummyUrl",
     number=1,
     assignees=["random_person"],
-    label=["random_label"])
+    labels=["random_label"])
 
 # Title location, 1 random person, add 1 person
 in_title = flexmock(title="title_1",
@@ -25,7 +25,7 @@ in_title = flexmock(title="title_1",
     html_url="DummyUrl",
     number=1,
     assignees=["random_person"],
-    label=["random_label"])
+    labels=["random_label"])
 
 # Text location, 1 random and 1 rule person, adds nobody
 in_text = flexmock(title="DummyTitle",
@@ -33,7 +33,7 @@ in_text = flexmock(title="DummyTitle",
     html_url="DummyUrl",
     number=1,
     assignees=["random_person", "person1"],
-    label=["random_label"])
+    labels=["random_label"])
 
 # Label + text location, 1 random person, adds 2 people
 in_label_text = flexmock(title="DummyTitle",
@@ -41,7 +41,7 @@ in_label_text = flexmock(title="DummyTitle",
     html_url="DummyUrl",
     number=1,
     assignees=["random_person"],
-    label=["label_1", "random_label"])
+    labels=["label_1", "random_label"])
 
 # Any location, 1 random person, adds 1 person
 in_any = flexmock(title="any_2",
@@ -49,4 +49,4 @@ in_any = flexmock(title="any_2",
     html_url="DummyUrl",
     number=1,
     assignees=["random_person"],
-    label=["random_label"])
+    labels=["random_label"])
