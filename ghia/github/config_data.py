@@ -1,8 +1,9 @@
 from configparser import ConfigParser
 
 class ConfigData:
+    """ Loads and parses all configuration files. """
     
-    def __init__(self, config_auth, config_rules = None):
+    def __init__(self, config_auth: ConfigParser, config_rules: ConfigParser = None):
         github = config_auth["github"]
         self.token = github["token"]
     
@@ -15,15 +16,9 @@ class ConfigData:
             if "other" in config_rules:
                 self.trigger_actions = config_rules["other"].get("trigger_actions").replace(" ", "").split(",")
 
-    # 
-    # Loads fallback label name and user_patterns data: 
-    #   { 
-    #       location: [ 
-    #           (pattern, username),
-    #           ...
-    #       ] 
-    #   }
     def load_rules(self, config_rules):
+        """ Loads fallback label name and user_patterns dictionary data. """
+        
         self.user_patterns = dict()
         self.user_patterns_by_user = dict()
 

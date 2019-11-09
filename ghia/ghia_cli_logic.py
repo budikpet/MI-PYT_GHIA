@@ -9,10 +9,14 @@ from ghia.github.my_data_classes import GroupedUsers, UserStatus
 from ghia.cli.strategy import GhiaContext
 
 def has_fallback_label(issue, context):
+	""" Returns True if the selected issue already has the Fallback label assigned. """
+
 	existing_labels = [label for label in issue["labels"] if label["name"] == context.get_fallback_label()]
 	return len(existing_labels) > 0
 
 def get_output_data(context: GhiaContext, issue, grouped_users: GroupedUsers):
+	""" Checks all things that need to be updated and creates data for the outgoing PATCH request. """
+
 	data = None
 
 	if grouped_users.update_needed():
@@ -32,7 +36,8 @@ def get_output_data(context: GhiaContext, issue, grouped_users: GroupedUsers):
 	return data
 
 def update_issue(context: GhiaContext, issue, grouped_users: GroupedUsers):
-	# Update issue
+	""" Update the selected issue. """
+
 	status_code = 200
 
 	if not context.dry_run:
@@ -45,6 +50,8 @@ def update_issue(context: GhiaContext, issue, grouped_users: GroupedUsers):
 	return status_code
 
 def write_user(user_status: UserStatus, user: str):
+	""" Write log message about state of the currently selected user. """
+
 	symbol = lambda curr_symbol, color: click.style(curr_symbol, bold=True, fg=color)
 	color = ""
 
@@ -58,6 +65,8 @@ def write_user(user_status: UserStatus, user: str):
 	click.echo(f'   {symbol(user_status.value, color)} {user}')
 
 def write_label(issue, context: GhiaContext):
+	""" Write log message about state of the Fallback label. """
+
 	msg = ""
 	if not has_fallback_label(issue, context):
 		msg = "added label"
@@ -66,6 +75,8 @@ def write_label(issue, context: GhiaContext):
 	click.echo(f'   {click.style("FALLBACK", fg="yellow")}: {msg} \"{context.get_fallback_label()}\"')
 
 def write_output(context: GhiaContext, issue, grouped_users: GroupedUsers, status_code: int):
+	""" Writes out all changes that the ghia algorithm did (or should have done) in the Github repository. """
+
 	info = f'{context.reposlug}#{issue["number"]}'
 	click.echo(f'-> {click.style(info, bold=True)} ({issue["html_url"]})')
 
@@ -82,8 +93,11 @@ def write_output(context: GhiaContext, issue, grouped_users: GroupedUsers, statu
 
 	print
 
-# Matches patterns to data in appropriate locations
 def patternMatches(issue, location, pattern):
+	"""
+		Matches patterns from the rules file to issue data in appropriate issue locations (issue body, issue labels etc).
+	"""
+
 	result = False
 
 	if location == "title" or location == "any":
@@ -100,10 +114,13 @@ def patternMatches(issue, location, pattern):
 
 	return result
 
-
-# Checks current issue against all patterns
-# Returns: [(user_status, user), ...]
 def group_users(context: GhiaContext, issue):
+	""" 
+		Checks current issue against all patterns.
+
+		Returns: GroupedUsers object.
+	"""
+
 	already_assigned_users = set(map(lambda assignee: assignee["login"], issue["assignees"]))
 	users_automatched = set()
 
