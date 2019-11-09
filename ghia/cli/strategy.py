@@ -10,7 +10,8 @@ class GhiaContext():
 
     def __init__(self, base: str, strategy: str, dry_run: bool, config_auth, config_rules, reposlug: str = None, session = None):
         self.base: str = base
-        self.strategy: GhiaStrategy = Strategies[strategy.upper()].value
+        self.strategy_name: Strategies = Strategies[strategy.upper()]
+        self.strategy: GhiaStrategy = self.strategy_name.value
         self.dry_run: bool = dry_run
         self.reposlug: str = reposlug
         self.session: requests.session = session
@@ -87,12 +88,15 @@ class SetStrategy(GhiaStrategy):
     """ 
         Set Ghia strategy.
 
-        New users are added to the issue only if there are no users specified.
+        New users are added to the issue only if there are no users specified. Currently specified users are left alone.
         
     """
 
     def get_grouped_users(self, users_automatched: Set[str], users_already_assigned: Set[str]) -> GroupedUsers:
         """ Returns the GroupedUsers object that is filled according to the specific strategy. """
+
+        if len(users_already_assigned) > 0:
+            users_automatched = set()
 
         users_found = len(users_automatched) != 0
         return GroupedUsers(users_found_by_rules=users_found,
