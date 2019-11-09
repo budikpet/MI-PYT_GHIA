@@ -5,16 +5,15 @@ import sys
 import json
 from enum import Enum
 from ghia.github.config_data import ConfigData
-from ghia.github.my_data_classes import GroupedUsers, UserStatus
+from ghia.github.my_data_classes import GroupedUsers, UserStatus, Issue
 from ghia.cli.strategy import GhiaContext
 
-def has_fallback_label(issue, context):
+def has_fallback_label(issue: Issue, context):
 	""" Returns True if the selected issue already has the Fallback label assigned. """
 
-	existing_labels = [label for label in issue["labels"] if label["name"] == context.get_fallback_label()]
-	return len(existing_labels) > 0
+	return context.get_fallback_label() in issue.labels
 
-def get_output_data(context: GhiaContext, issue, grouped_users: GroupedUsers):
+def get_output_data(context: GhiaContext, issue: Issue, grouped_users: GroupedUsers):
 	""" Checks all things that need to be updated and creates data for the outgoing PATCH request. """
 
 	data = None
@@ -25,7 +24,7 @@ def get_output_data(context: GhiaContext, issue, grouped_users: GroupedUsers):
 		}
 	elif not grouped_users.users_found_by_rules and context.get_fallback_label() is not None and not has_fallback_label(issue, context):
 		labels = [context.get_fallback_label()]
-		labels.extend([label["name"] for label in issue["labels"]])
+		labels.extend(issue.labels)
 		data = {
 			"labels": labels
 		}
@@ -35,7 +34,7 @@ def get_output_data(context: GhiaContext, issue, grouped_users: GroupedUsers):
 
 	return data
 
-def update_issue(context: GhiaContext, issue, grouped_users: GroupedUsers):
+def update_issue(context: GhiaContext, issue: Issue, grouped_users: GroupedUsers):
 	""" Update the selected issue. """
 
 	status_code = 200
@@ -44,7 +43,7 @@ def update_issue(context: GhiaContext, issue, grouped_users: GroupedUsers):
 		data = get_output_data(context, issue, grouped_users)
 
 		if data is not None:
-			r = context.session.patch(f'{context.base}/repos/{context.get_reposlug()}/issues/{issue["number"]}', data=data)
+			r = context.session.patch(f'{context.base}/repos/{context.get_reposlug()}/issues/{issue.number}', data=data)
 			status_code = r.status_code
 
 	return status_code
@@ -74,11 +73,11 @@ def write_label(issue, context: GhiaContext):
 		msg = "already has label"
 	click.echo(f'   {click.style("FALLBACK", fg="yellow")}: {msg} \"{context.get_fallback_label()}\"')
 
-def write_output(context: GhiaContext, issue, grouped_users: GroupedUsers, status_code: int):
+def write_output(context: GhiaContext, issue: Issue, grouped_users: GroupedUsers, status_code: int):
 	""" Writes out all changes that the ghia algorithm did (or should have done) in the Github repository. """
 
-	info = f'{context.reposlug}#{issue["number"]}'
-	click.echo(f'-> {click.style(info, bold=True)} ({issue["html_url"]})')
+	info = f'{context.reposlug}#{issue.number}'
+	click.echo(f'-> {click.style(info, bold=True)} ({issue.html_url})')
 
 	# Create output
 	if status_code != 200 and not context.dry_run:
@@ -93,7 +92,7 @@ def write_output(context: GhiaContext, issue, grouped_users: GroupedUsers, statu
 
 	print
 
-def patternMatches(issue, location, pattern):
+def patternMatches(issue: Issue, location, pattern):
 	"""
 		Matches patterns from the rules file to issue data in appropriate issue locations (issue body, issue labels etc).
 	"""
@@ -101,27 +100,27 @@ def patternMatches(issue, location, pattern):
 	result = False
 
 	if location == "title" or location == "any":
-		result = result or bool(re.search(pattern, issue["title"], re.IGNORECASE))
+		result = result or bool(re.search(pattern, issue.title, re.IGNORECASE))
 
 	if location == "text" or location == "any":
-		result = result or bool(re.search(pattern, issue["body"], re.IGNORECASE))
+		result = result or bool(re.search(pattern, issue.body, re.IGNORECASE))
 
 	if location == "label" or location == "any":
-		for label in issue["labels"]:
-			if bool(re.search(pattern, label["name"], re.IGNORECASE)):
+		for label in issue.labels:
+			if bool(re.search(pattern, label, re.IGNORECASE)):
 				result = True
 				break
 
 	return result
 
-def group_users(context: GhiaContext, issue):
+def group_users(context: GhiaContext, issue: Issue):
 	""" 
 		Checks current issue against all patterns.
 
 		Returns: GroupedUsers object.
 	"""
 
-	already_assigned_users = set(map(lambda assignee: assignee["login"], issue["assignees"]))
+	already_assigned_users = set(issue.assignees)
 	users_automatched = set()
 
 	# Find users that should be assigned
@@ -169,6 +168,7 @@ def ghia_run(context: GhiaContext, issue_number: int = None):
 		# Check all received issues
 		for issue in issues:
 			# Check current issue against all patterns in all locations
+			issue = Issue(issue)
 			grouped_users = group_users(context, issue)
 			status_code = update_issue(context, issue, grouped_users)
 			write_output(context, issue, grouped_users, status_code)

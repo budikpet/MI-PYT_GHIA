@@ -10,7 +10,7 @@
             "type": "python",
             "request": "launch",
             "module": "ghia",
-            "args": ["--dry-run", "-s", "append", "-a", "credentials.cfg", "-r", "rules.cfg", "mi-pyt-ghia/budikpet"],
+            "args": ["--dry-run", "-s", "change", "-a", "credentials.cfg", "-r", "rules.cfg", "mi-pyt-ghia/budikpet"],
             "console": "integratedTerminal"
         },
         {

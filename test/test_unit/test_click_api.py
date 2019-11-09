@@ -2,7 +2,7 @@ from click.testing import CliRunner
 from ghia import ghia
 from ghia.ghia_cli_logic import ghia_run
 from ghia.cli.strategy import GhiaContext
-from fixtures_dummies import context
+from custom_fixtures import context
 
 def test_context(context: GhiaContext):
     # betamax_session.get('https://httpbin.org/get')

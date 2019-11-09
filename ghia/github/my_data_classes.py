@@ -2,6 +2,17 @@ from enum import Enum
 from typing import Set, List
 from dataclasses import dataclass, field
 
+class Issue():
+    
+    def __init__(self, issue):
+        self.title = issue["title"]
+        self.body = issue["body"]
+        self.html_url = issue["html_url"]
+        self.number = issue["number"]
+
+        self.assignees = [assignee["login"] for assignee in issue["assignees"]]
+        self.labels = [label["name"] for label in issue["labels"]]
+
 @dataclass
 class RuleLocation():
     name: str
