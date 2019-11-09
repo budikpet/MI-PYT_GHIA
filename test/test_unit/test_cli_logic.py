@@ -17,7 +17,7 @@ import dummies
      ],
 )
 def test_pattern_matches(context: GhiaContext, issue: Issue, location: str, pattern: str, should_be_found: bool):
-    assert cli_logic.patternMatches(issue, location, pattern) == should_be_found
+    assert cli_logic.pattern_matches(issue, location, pattern) == should_be_found
 
 @pytest.mark.parametrize(
     'issue', (dummies.in_any, dummies.in_label_text, dummies.in_text, dummies.in_title)

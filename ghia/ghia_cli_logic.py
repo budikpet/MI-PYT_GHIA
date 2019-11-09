@@ -92,7 +92,7 @@ def write_output(context: GhiaContext, issue: Issue, grouped_users: GroupedUsers
 
 	print
 
-def patternMatches(issue: Issue, location: str, pattern: str):
+def pattern_matches(issue: Issue, location: str, pattern: str):
 	"""
 		Matches patterns from the rules file to issue data in appropriate issue locations (issue body, issue labels etc).
 	"""
@@ -126,7 +126,7 @@ def group_users(context: GhiaContext, issue: Issue):
 	# Find users that should be assigned
 	for (location, pairs) in context.get_user_patterns().items():
 		for (pattern, username) in pairs:
-			if patternMatches(issue, location, pattern):
+			if pattern_matches(issue, location, pattern):
 				# Current user should be added to the issue
 				users_automatched.add(username)
 
