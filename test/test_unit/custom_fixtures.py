@@ -2,6 +2,7 @@ from configparser import ConfigParser
 import betamax
 import pytest
 import os
+from ghia.ghia import inputStrategies
 from ghia.cli.strategy import GhiaContext, Strategies
 from ghia.github.config_data import ConfigData
 
@@ -57,11 +58,11 @@ def get_configs():
 
     return config_auth, config_rules
 
-@pytest.fixture
-def context(betamax_session):
+@pytest.fixture(params=(inputStrategies))
+def context(betamax_session, request):
     config_auth, config_rules = get_configs()
     
-    return GhiaContext("https://api.github.com", strategy=Strategies.APPEND.name, dry_run=True, 
+    return GhiaContext("https://api.github.com", strategy=request.param, dry_run=True, 
         config_auth=config_auth, config_rules=config_rules, reposlug="mi-pyt-ghia/budikpet", session=betamax_session)
 
 @pytest.fixture(scope='session', autouse=True)
