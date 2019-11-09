@@ -3,6 +3,7 @@ from typing import Set, List
 from dataclasses import dataclass, field
 
 class Issue():
+    """ Gets important info about the issue from the incomming dictionary. """
     
     def __init__(self, issue):
         self.title = issue["title"]
