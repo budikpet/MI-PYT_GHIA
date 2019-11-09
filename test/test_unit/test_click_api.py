@@ -7,12 +7,17 @@ from ghia import ghia
 from ghia.cli.strategy import GhiaContext, Strategies
 from ghia.github.config_data import ConfigData
 
-fixtures_path = "test/test_unit/fixtures"
+fixtures_path = f"{os.path.dirname(os.path.abspath(__file__))}/fixtures"
 tmp_credentials_path = f"{fixtures_path}/tmp_credentials.cfg"
 
 with betamax.Betamax.configure() as config:
+    cassettes_lib = f'{fixtures_path}/cassettes'
+
+    if(not os.path.isdir(cassettes_lib)):
+        os.mkdir(cassettes_lib)
+
     # tell Betamax where to find the cassettes
-    config.cassette_library_dir = f'{fixtures_path}/cassettes'
+    config.cassette_library_dir = cassettes_lib
     env_configs = "CREDENTIALS_FILE"
 
     TOKEN = SECRET = "xxx"
@@ -60,6 +65,8 @@ def test_context(context: GhiaContext):
     # betamax_session.get('https://httpbin.org/get')
     assert context.base == "https://api.github.com"
     assert context.session is not None
+    assert context.get_token() is not None and context.get_token() != ""
+    assert context.get_secret() is not None and context.get_secret() != ""
 
 def test_help():
     runner = CliRunner()
