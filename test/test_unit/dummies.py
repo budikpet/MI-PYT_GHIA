@@ -9,10 +9,10 @@ has_fallback_label = flexmock(title="DummyTitle",
     body="DummyBody",
     html_url="DummyUrl",
     number=1,
-    assignees=[random_person],
+    assignees=[],
     labels=[fallback_label],
-    ppl_after_append=1,
-    ppl_after_set=1,
+    ppl_after_append=0,
+    ppl_after_set=0,
     ppl_after_change=0,
     users_to_add=[]
     )

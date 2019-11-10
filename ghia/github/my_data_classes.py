@@ -43,6 +43,8 @@ class GroupedUsers():
         return len(self.users_automatched) > 0 or len(self.users_to_remove) > 0
 
     def get_users_to_assign(self) -> Set[str]:
+        """ Returns list of all users that have to be in the outgoing PATCH request to have the desired effect. """
+
         return list(self.users_automatched | self.users_to_leave)
 
     def get_output_list(self) -> List[str]:

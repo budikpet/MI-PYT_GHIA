@@ -13,24 +13,28 @@ def has_fallback_label(issue: Issue, context):
 
 	return context.get_fallback_label() in issue.labels
 
-def get_output_data(context: GhiaContext, issue: Issue, grouped_users: GroupedUsers):
-	""" Checks all things that need to be updated and creates data for the outgoing PATCH request. """
+def get_output_data(context: GhiaContext, issue: Issue, grouped_users: GroupedUsers) -> str:
+	""" 
+		Checks all things that need to be updated and creates data for the outgoing PATCH request. 
 
-	data = None
+		Returns JSON data string.
+	"""
+
+	data = dict()
 
 	if grouped_users.update_needed():
-		data = {
-			"assignees": grouped_users.get_users_to_assign()
-		}
-	elif not grouped_users.users_found_by_rules and context.get_fallback_label() is not None and not has_fallback_label(issue, context):
+		data["assignees"] = grouped_users.get_users_to_assign()
+	
+	if not grouped_users.users_found_by_rules and context.get_fallback_label() is not None and not has_fallback_label(issue, context):
 		labels = [context.get_fallback_label()]
 		labels.extend(issue.labels)
-		data = {
-			"labels": labels
-		}
+		data["labels"] = labels
 
-	if data is not None:
+	if data:
+		# Data is not empty
 		data = json.dumps(data)
+	else:
+		data = None
 
 	return data
 

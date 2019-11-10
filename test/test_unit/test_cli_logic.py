@@ -1,4 +1,5 @@
 import pytest
+import json
 from typing import List
 from ghia.cli.strategy import GhiaContext, Strategies
 from ghia.github.my_data_classes import Issue, GroupedUsers
@@ -50,9 +51,37 @@ def test_group_users(context: GhiaContext, issue):
         else:
             assert len(users_to_assign) == len(issue.users_to_add)
             assert all(user in users_to_assign for user in issue.users_to_add)
-
-        print
     else:
         raise ValueError("Unknown strategy.")
 
+def test_output_data_labels(context: GhiaContext):
+    issue = dummies.has_fallback_label
+    grouped_users: GroupedUsers = cli_logic.group_users(context, issue)
+    data = cli_logic.get_output_data(context, issue, grouped_users)
+    assert data is None
+
+    issue = dummies.no_fallback_label
+    grouped_users: GroupedUsers = cli_logic.group_users(context, issue)
+    data = cli_logic.get_output_data(context, issue, grouped_users)
+    assert data is not None
+    
+    data = json.loads(data)
+    assert data.get("labels") is not None
+    assert dummies.fallback_label in data.get("labels")
+    assert len(data.get("labels")) == len(issue.labels) + 1
+
+    if context.strategy_name == Strategies.CHANGE:
+        assert len(data.get("assignees")) == issue.ppl_after_change
+    elif context.strategy_name == Strategies.APPEND:
+        assert data.get("assignees") is None or len(data.get("assignees")) == issue.ppl_after_append
+    elif context.strategy_name == Strategies.SET:
+        assert data.get("assignees") is None or len(data.get("assignees")) == issue.ppl_after_set
+
+    print
+
+@pytest.mark.parametrize(
+    'issue', (dummies.in_any, dummies.in_label_text, dummies.in_text, dummies.in_title)
+)
+def test_output_data_ppl(context: GhiaContext, issue):
+    grouped_users: GroupedUsers = cli_logic.group_users(context, issue)
     print
