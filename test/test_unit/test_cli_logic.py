@@ -66,16 +66,18 @@ def test_output_data_labels(context: GhiaContext):
     assert data is not None
     
     data = json.loads(data)
-    assert data.get("labels") is not None
-    assert dummies.fallback_label in data.get("labels")
-    assert len(data.get("labels")) == len(issue.labels) + 1
+    assignees: List[str] = data.get("assignees")
+    labels: List[str] = data.get("labels")
+    assert labels is not None
+    assert dummies.fallback_label in labels
+    assert len(labels) == len(issue.labels) + 1
 
     if context.strategy_name == Strategies.CHANGE:
-        assert len(data.get("assignees")) == issue.ppl_after_change
+        assert len(assignees) == issue.ppl_after_change
     elif context.strategy_name == Strategies.APPEND:
-        assert data.get("assignees") is None or len(data.get("assignees")) == issue.ppl_after_append
+        assert assignees is None or len(assignees) == issue.ppl_after_append
     elif context.strategy_name == Strategies.SET:
-        assert data.get("assignees") is None or len(data.get("assignees")) == issue.ppl_after_set
+        assert assignees is None or len(assignees) == issue.ppl_after_set
 
     print
 
@@ -84,4 +86,27 @@ def test_output_data_labels(context: GhiaContext):
 )
 def test_output_data_ppl(context: GhiaContext, issue):
     grouped_users: GroupedUsers = cli_logic.group_users(context, issue)
+    data = cli_logic.get_output_data(context, issue, grouped_users)
+    
+    if grouped_users.update_needed():
+        assert data is not None
+    else:
+        assert data is None
+        return
+    
+    data = json.loads(data)
+    assignees: List[str] = data.get("assignees")
+    labels: List[str] = data.get("labels")
+    assert labels is None
+    assert assignees is not None
+    assert all(user in assignees for user in issue.users_to_add)
+
+    if context.strategy_name == Strategies.APPEND:
+        assert len(assignees) == issue.ppl_after_append
+    if context.strategy_name == Strategies.SET:
+        assert len(assignees) == issue.ppl_after_set
+    if context.strategy_name == Strategies.CHANGE:
+        assert len(assignees) == issue.ppl_after_change
+        assert dummies.random_person not in assignees
+
     print

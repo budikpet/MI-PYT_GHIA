@@ -79,5 +79,5 @@ in_any = flexmock(title="any_2",
     ppl_after_append=2,
     ppl_after_set=1,
     ppl_after_change=1,
-    users_to_add=["person_1"]
+    users_to_add=["person_2"]
     )
