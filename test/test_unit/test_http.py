@@ -20,8 +20,8 @@ def test_ghia_run(context_with_session: GhiaContext, capfd):
     assert out.count(f"-> {context_with_session.reposlug}") == opened_issues
     assert out.count(f"https://github.com/{context_with_session.reposlug}/issues/") == opened_issues
 
-    assert out.count(f"   FALLBACK: added label \"{context_with_session.get_fallback_label()}\"") == 8
-    assert out.count(f"   FALLBACK: already has label \"{context_with_session.get_fallback_label()}\"") == 93
+    assert out.count(f"   FALLBACK: added label \"{context_with_session.get_fallback_label()}\"") == 19
+    assert out.count(f"   FALLBACK: already has label \"{context_with_session.get_fallback_label()}\"") == 82
 
     if context_with_session.strategy_name == Strategies.APPEND:
         assert out.count("   +") == 6

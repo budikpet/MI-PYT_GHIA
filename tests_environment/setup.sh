@@ -176,3 +176,5 @@ hub issue create -F ../issues/dummy.txt -l"Need assignment"
 
 cd ..
 rm -rf "${GITHUB_USER}"
+
+./prepare_http_test.sh
