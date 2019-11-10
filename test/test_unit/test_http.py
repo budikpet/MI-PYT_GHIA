@@ -16,4 +16,24 @@ def test_ghia_run(context_with_session: GhiaContext, capfd):
     assert err == '' or err is None
     assert out is not None
 
+    opened_issues = 112
+    assert out.count(f"-> {context_with_session.reposlug}") == opened_issues
+    assert out.count(f"https://github.com/mi-pyt-ghia/budikpet/issues/") == opened_issues
+
+    assert out.count(f"   FALLBACK: added label \"{context_with_session.get_fallback_label()}\"") == 8
+    assert out.count(f"   FALLBACK: already has label \"{context_with_session.get_fallback_label()}\"") == 93
+
+    if context_with_session.strategy_name == Strategies.APPEND:
+        assert out.count("   +") == 6
+        assert out.count("   =") == 8
+        assert out.count("   -") == 0
+    if context_with_session.strategy_name == Strategies.SET:
+        assert out.count("   +") == 5
+        assert out.count("   =") == 8
+        assert out.count("   -") == 0
+    if context_with_session.strategy_name == Strategies.CHANGE:
+        assert out.count("   +") == 6
+        assert out.count("   =") == 0
+        assert out.count("   -") == 8
+
     print

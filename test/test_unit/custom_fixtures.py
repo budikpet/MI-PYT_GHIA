@@ -48,12 +48,12 @@ with betamax.Betamax.configure() as config:
     config.define_cassette_placeholder('<TOKEN>', TOKEN)
     config.define_cassette_placeholder('<SECRET>', SECRET)
 
-def get_configs(credentials_file):
+def get_configs(credentials_path: str, rules_path: str):
     config_auth, config_rules = ConfigParser(), ConfigParser()
-    with open(f"{fixtures_path}/rules.cfg") as rules_file:
+    with open(rules_path) as rules_file:
         config_rules.read_file(rules_file)
 
-    with open(tmp_credentials_path) as credentials_file:
+    with open(credentials_path) as credentials_file:
         config_auth.read_file(credentials_file)
 
     return config_auth, config_rules
@@ -61,14 +61,14 @@ def get_configs(credentials_file):
 @pytest.fixture(params=(inputStrategies))
 def context_with_session(betamax_parametrized_session, request):
     """ 
-        Creates a context with betamax session and no dry_run. 
+        Creates a dry_run context with betamax session. 
 
         Used mainly for unit tests which have recorded HTTP communication with the real API.
     
     """
-    config_auth, config_rules = get_configs(credentials_file)
+    config_auth, config_rules = get_configs(tmp_credentials_path, f"{fixtures_path}/rules_http.cfg")
     
-    return GhiaContext("https://api.github.com", strategy=request.param, dry_run=False, 
+    return GhiaContext("https://api.github.com", strategy=request.param, dry_run=True, 
         config_auth=config_auth, config_rules=config_rules, reposlug="mi-pyt-ghia/budikpet", session=betamax_parametrized_session)
 
 @pytest.fixture(params=(inputStrategies))
@@ -78,7 +78,7 @@ def context(request):
 
         Used mainly for unit tests which use dummies.
     """
-    config_auth, config_rules = get_configs(f'{fixtures_path}/dummy_credentials.cfg')
+    config_auth, config_rules = get_configs(f'{fixtures_path}/dummy_credentials.cfg', f"{fixtures_path}/rules.cfg")
     
     return GhiaContext("https://api.github.com", strategy=request.param, dry_run=True, 
         config_auth=config_auth, config_rules=config_rules, reposlug="mi-pyt-ghia/budikpet", session=None)
