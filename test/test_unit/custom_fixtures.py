@@ -36,7 +36,7 @@ with betamax.Betamax.configure() as config:
         
         # Always re-record the cassetes
         # https://betamax.readthedocs.io/en/latest/record_modes.html
-        config.default_cassette_options['record_mode'] = 'all'
+        config.default_cassette_options['record_mode'] = 'once'
     else:
         # Do not attempt to record sessions with bad fake token
         config.default_cassette_options['record_mode'] = 'none'
@@ -59,7 +59,7 @@ def get_configs(credentials_file):
     return config_auth, config_rules
 
 @pytest.fixture(params=(inputStrategies))
-def context_with_session(betamax_session, request):
+def context_with_session(betamax_parametrized_session, request):
     """ 
         Creates a context with betamax session and no dry_run. 
 
@@ -69,7 +69,7 @@ def context_with_session(betamax_session, request):
     config_auth, config_rules = get_configs(credentials_file)
     
     return GhiaContext("https://api.github.com", strategy=request.param, dry_run=False, 
-        config_auth=config_auth, config_rules=config_rules, reposlug="mi-pyt-ghia/budikpet", session=betamax_session)
+        config_auth=config_auth, config_rules=config_rules, reposlug="mi-pyt-ghia/budikpet", session=betamax_parametrized_session)
 
 @pytest.fixture(params=(inputStrategies))
 def context(request):
