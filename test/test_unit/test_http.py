@@ -18,7 +18,7 @@ def test_ghia_run(context_with_session: GhiaContext, capfd):
 
     opened_issues = 112
     assert out.count(f"-> {context_with_session.reposlug}") == opened_issues
-    assert out.count(f"https://github.com/mi-pyt-ghia/budikpet/issues/") == opened_issues
+    assert out.count(f"https://github.com/{context_with_session.reposlug}/issues/") == opened_issues
 
     assert out.count(f"   FALLBACK: added label \"{context_with_session.get_fallback_label()}\"") == 8
     assert out.count(f"   FALLBACK: already has label \"{context_with_session.get_fallback_label()}\"") == 93
