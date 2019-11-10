@@ -48,7 +48,7 @@ with betamax.Betamax.configure() as config:
     config.define_cassette_placeholder('<TOKEN>', TOKEN)
     config.define_cassette_placeholder('<SECRET>', SECRET)
 
-def get_configs():
+def get_configs(credentials_file):
     config_auth, config_rules = ConfigParser(), ConfigParser()
     with open(f"{fixtures_path}/rules.cfg") as rules_file:
         config_rules.read_file(rules_file)
@@ -59,11 +59,29 @@ def get_configs():
     return config_auth, config_rules
 
 @pytest.fixture(params=(inputStrategies))
-def context(betamax_session, request):
-    config_auth, config_rules = get_configs()
+def context_with_session(betamax_session, request):
+    """ 
+        Creates a context with betamax session and no dry_run. 
+
+        Used mainly for unit tests which have recorded HTTP communication with the real API.
+    
+    """
+    config_auth, config_rules = get_configs(credentials_file)
+    
+    return GhiaContext("https://api.github.com", strategy=request.param, dry_run=False, 
+        config_auth=config_auth, config_rules=config_rules, reposlug="mi-pyt-ghia/budikpet", session=betamax_session)
+
+@pytest.fixture(params=(inputStrategies))
+def context(request):
+    """ 
+        Creates a dry_run context without any session. 
+
+        Used mainly for unit tests which use dummies.
+    """
+    config_auth, config_rules = get_configs(f'{fixtures_path}/dummy_credentials.cfg')
     
     return GhiaContext("https://api.github.com", strategy=request.param, dry_run=True, 
-        config_auth=config_auth, config_rules=config_rules, reposlug="mi-pyt-ghia/budikpet", session=betamax_session)
+        config_auth=config_auth, config_rules=config_rules, reposlug="mi-pyt-ghia/budikpet", session=None)
 
 @pytest.fixture(scope='session', autouse=True)
 def remove_credentials_file():
