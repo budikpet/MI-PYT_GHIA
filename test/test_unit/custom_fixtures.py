@@ -58,6 +58,19 @@ def get_configs(credentials_path: str, rules_path: str):
 
     return config_auth, config_rules
 
+def get_github_data():
+    """  
+        Reads test_config.cfg 
+
+        Returns (base, reposlug).
+        
+    """
+    parser = ConfigParser()
+    with open(f"{fixtures_path}/test_config.cfg", "r") as github_config:
+        parser.read_file(github_config)
+    
+    return parser["github"]["base"], parser["github"]["reposlug"]
+
 @pytest.fixture(params=(inputStrategies))
 def context_with_session(betamax_parametrized_session, request):
     """ 
@@ -66,10 +79,11 @@ def context_with_session(betamax_parametrized_session, request):
         Used mainly for unit tests which have recorded HTTP communication with the real API.
     
     """
+    base, reposlug = get_github_data()
     config_auth, config_rules = get_configs(tmp_credentials_path, f"{fixtures_path}/rules_http.cfg")
     
-    return GhiaContext("https://api.github.com", strategy=request.param, dry_run=True, 
-        config_auth=config_auth, config_rules=config_rules, reposlug="mi-pyt-ghia/budikpet", session=betamax_parametrized_session)
+    return GhiaContext(base, strategy=request.param, dry_run=True, 
+        config_auth=config_auth, config_rules=config_rules, reposlug=reposlug, session=betamax_parametrized_session)
 
 @pytest.fixture(params=(inputStrategies))
 def context(request):
@@ -78,10 +92,11 @@ def context(request):
 
         Used mainly for unit tests which use dummies.
     """
-    config_auth, config_rules = get_configs(f'{fixtures_path}/dummy_credentials.cfg', f"{fixtures_path}/rules.cfg")
+    base, reposlug = get_github_data()
+    config_auth, config_rules = get_configs(f'{fixtures_path}/dummy_credentials.cfg', f"{fixtures_path}/rules_unit.cfg")
     
-    return GhiaContext("https://api.github.com", strategy=request.param, dry_run=True, 
-        config_auth=config_auth, config_rules=config_rules, reposlug="mi-pyt-ghia/budikpet", session=None)
+    return GhiaContext(base, strategy=request.param, dry_run=True, 
+        config_auth=config_auth, config_rules=config_rules, reposlug=reposlug, session=None)
 
 @pytest.fixture(scope='session', autouse=True)
 def remove_credentials_file():
