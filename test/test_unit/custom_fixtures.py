@@ -104,5 +104,5 @@ def remove_credentials_file():
     
     yield True
     # Will be executed at the end of the whole test session
-    os.remove(tmp_credentials_path)
-    print("Temporary credentials file removed.")
+    # os.remove(tmp_credentials_path)
+    # print("Temporary credentials file removed.")

@@ -25,7 +25,7 @@ def test_install(utils, config, tmpdir, sh, channel):
         testpypiname = config['vars']['testpypiname']
         result = sh(utils.pip_install_testpypi, testpypiname)
         assert result.was_successful, \
-            'Could not install "{}" from Test PyPI'.format(testpypiname, result.stderr)
+            'Could not install "{}" from Test PyPI {}'.format(testpypiname, result.stderr)
 
     else:
         raise LookupError('Unknown install channel')
