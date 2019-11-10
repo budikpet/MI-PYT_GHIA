@@ -2,7 +2,7 @@ import pytest
 import json
 from typing import List
 from ghia.cli.strategy import GhiaContext, Strategies
-from ghia.github.my_data_classes import Issue, GroupedUsers
+from ghia.github.my_data_classes import Issue, GroupedUsers, UserStatus
 from custom_fixtures import context, remove_credentials_file
 import ghia.ghia_cli_logic as cli_logic
 import dummies
@@ -79,8 +79,6 @@ def test_output_data_labels(context: GhiaContext):
     elif context.strategy_name == Strategies.SET:
         assert assignees is None or len(assignees) == issue.ppl_after_set
 
-    print
-
 @pytest.mark.parametrize(
     'issue', (dummies.in_any, dummies.in_label_text, dummies.in_text, dummies.in_title)
 )
@@ -110,3 +108,34 @@ def test_output_data_ppl(context: GhiaContext, issue):
         assert dummies.random_person not in assignees
 
     print
+
+
+@pytest.mark.parametrize(
+    ['issue', 'has_label'], [(dummies.has_fallback_label, True), (dummies.no_fallback_label, False)]
+)
+def test_write_label(context: GhiaContext, capfd, issue, has_label: bool):
+    cli_logic.write_label(issue, context)
+
+    out, err = capfd.readouterr()
+    assert err == '' or err is None
+    assert out is not None
+
+    if has_label:
+        assert out == f'   FALLBACK: already has label \"{dummies.fallback_label}\"\n'
+    else:
+        assert out == f'   FALLBACK: added label \"{dummies.fallback_label}\"\n'
+
+    print
+
+@pytest.mark.parametrize(
+    "user_status", (UserStatus.ADD, UserStatus.LEAVE, UserStatus.REMOVE)
+)
+def test_write_user(capfd, user_status: UserStatus):
+    user = "person"
+    cli_logic.write_user(user_status, user)
+    
+    out, err = capfd.readouterr()
+    assert err == '' or err is None
+    assert out is not None
+    assert out == f"   {user_status.value} {user}\n"
+    
