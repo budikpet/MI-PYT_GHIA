@@ -1,4 +1,6 @@
 # MI-PYT_GHIA
+[![Build Status](https://travis-ci.com/budikpet/MI-PYT_GHIA.svg?token=NsX1uECKWY27k8Urnctq&branch=GHIA_IV)](https://travis-ci.com/budikpet/MI-PYT_GHIA)
+
 Work repository of [naucse.python](https://naucse.python.cz/2019/mipyt-zima/) homework [GHIA](https://github.com/cvut/ghia/tree/basic).
 
 Tests in test/test_unit/test_http.py module use betamax to record HTTP communication into cassettes. There are prerecorded cassettes with HTTP communication in the repository. This communication was taken from the authors test repository. 
