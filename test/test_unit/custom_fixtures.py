@@ -98,6 +98,15 @@ def context(request):
     return GhiaContext(base, strategy=request.param, dry_run=True, 
         config_auth=config_auth, config_rules=config_rules, reposlug=reposlug, session=None)
 
+@pytest.fixture
+def testapp(context):
+    from ghia import create_app
+
+    context.username = "test_username"
+    app = create_app(context=context)
+    app.config['TESTING'] = True
+    return app.test_client()
+
 @pytest.fixture(scope='session', autouse=True)
 def remove_credentials_file():
     # Will be executed at the start of the whole test session

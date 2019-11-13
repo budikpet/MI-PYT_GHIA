@@ -31,11 +31,14 @@ def get_context(config_auth, config_rules) -> GhiaContext:
 
 	return context
 
-def create_app(config=None):
+def create_app(context: GhiaContext = None, config=None):
 	app = Flask(__name__, template_folder="templates")
 
-	config_auth, config_rules = util.get_configs()
-	context = get_context(config_auth, config_rules)
+	if context is None:
+		config_auth, config_rules = util.get_configs()
+		context: GhiaContext = get_context(config_auth, config_rules)
+	# else:
+	# 	context.username = get_username(context)
 
 	app.config["GHIA_CONTEXT"] = context
 	app.secret_key = context.get_secret()

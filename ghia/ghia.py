@@ -7,8 +7,8 @@ from ghia.cli.strategy import Strategies, GhiaContext
 from ghia.ghia_cli_logic import ghia_run
 from ghia import ghia_web_logic
 
-def create_app(config=None):
-	return ghia_web_logic.create_app(config=config)
+def create_app(context: GhiaContext = None, config=None):
+	return ghia_web_logic.create_app(context=context, config=config)
 
 inputStrategies = [strategy.name.lower() for strategy in Strategies]
 
