@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setup(
     name='ghia_budikpet',
-    version='0.4.2',
+    version='0.4.3',
     description='GHIA CLI and web app tutorial.',
     long_description=long_description,
     keywords="ghia,budikpet, web, cli",
@@ -20,7 +20,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'ghia = ghia.ghia:main',
+            'ghia = ghia:ghia',
         ],
     },
     package_data={

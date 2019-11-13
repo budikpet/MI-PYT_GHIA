@@ -9,7 +9,6 @@ Click==7.0
 docutils==0.15.2
 Flask==1.1.1
 flexmock==0.10.4
--e git+https://github.com/budikpet/MI-PYT_GHIA.git@19aa457ab254fcb7b12de451c88a982ca72313a2#egg=ghia_budikpet
 idna==2.8
 importlib-metadata==0.23
 isort==4.3.21
