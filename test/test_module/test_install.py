@@ -32,6 +32,7 @@ def test_install(utils, config, tmpdir, sh, channel):
 
     # Check installed requirements
     result = sh(utils.pip, 'freeze')
+    print(f"Freeze: {result.stdout}\n\n")
     assert result.was_successful, \
         'Command pip freeze failed'
 
@@ -42,6 +43,7 @@ def test_install(utils, config, tmpdir, sh, channel):
 
     # Run with entrypoint
     result = sh(utils.ghia_entrypoint, '--help')
+    print(f"Error: {result.stdout}")
     assert result.was_successful, \
         'Invoking help via entrypoint failed'
 
