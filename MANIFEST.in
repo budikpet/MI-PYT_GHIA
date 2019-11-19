@@ -1,1 +1,3 @@
 include LICENSE
+recursive-include tests *.py *.cfg .gitignore *.json
+recursive-include test_module *.py *.cfg .gitignore *.json
