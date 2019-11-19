@@ -1,13 +1,14 @@
 import click
 from flask import Flask
+import requests
 from typing import Tuple
 from ghia.cli import validator
 from ghia.cli.strategy import Strategies, GhiaContext
 from ghia.ghia_cli_logic import ghia_run
 from ghia import ghia_web_logic
 
-def create_app(config=None):
-	return ghia_web_logic.create_app(config=config)
+def create_app(context: GhiaContext = None, config=None):
+	return ghia_web_logic.create_app(context=context, config=config)
 
 inputStrategies = [strategy.name.lower() for strategy in Strategies]
 
@@ -19,8 +20,8 @@ inputStrategies = [strategy.name.lower() for strategy in Strategies]
 @click.argument('REPOSLUG', callback=validator.validateReposlug, required=True)
 def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 	"""CLI tool for automatic issue assigning of GitHub issues"""
-	context = GhiaContext("https://api.github.com", strategy, dry_run, config_auth, config_rules, reposlug)
-
+	context = GhiaContext("https://api.github.com", strategy, dry_run, config_auth, config_rules, reposlug, session=requests.Session())
+	
 	ghia_run(context)
 	
 # This function will be used as a default call

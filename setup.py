@@ -5,11 +5,14 @@ with open('README.md') as f:
 
 setup(
     name='ghia_budikpet',
-    version='0.3.9',
+    version='0.4.5',
     description='GHIA CLI and web app tutorial.',
     long_description=long_description,
     keywords="ghia,budikpet, web, cli",
+    setup_requires=['pytest-runner'],
     install_requires=['Flask', 'click>=6', 'requests'],
+    tests_require=['pytest==5.0.1', 'betamax', 'flexmock'],
+    python_requires='>=3.7',
     author='Petr Budík',
     author_email='budikpet@fit.cvut.cz',
     license='Public Domain',
@@ -18,7 +21,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'ghia = ghia.ghia:main',
+            'ghia = ghia:ghia',
         ],
     },
     package_data={

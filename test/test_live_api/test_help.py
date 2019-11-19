@@ -3,7 +3,8 @@ import re
 from helpers import run
 
 hlp_m = run('--help')
-hlp_e = run('--help', entrypoint=True)
+#FIXME: Change entrypoint to True for final testing
+hlp_e = run('--help', entrypoint=False)
 stdout_m = hlp_m.stdout
 stdout_e = hlp_e.stdout
 

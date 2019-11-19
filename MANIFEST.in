@@ -1,1 +1,6 @@
 include LICENSE
+recursive-include test *.py *.cfg .gitignore *.json
+include rules.cfg
+include setup.cfg
+include requirements.txt
+include credentials_sample.cfg

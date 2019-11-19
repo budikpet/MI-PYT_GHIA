@@ -2,13 +2,17 @@
     "python.pythonPath": "venv/bin/python",
     // "python.pythonPath": "/Users/petr/Documents/Projects/Python/MI-PYT_GHIA/venv/bin/python",
     "python.testing.pytestArgs": [
-        "tests"
+        "test"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+        "test"
+    ],
+    "python.testing.pytestEnabled": true,
     "python.testing.pyTestArgs": [
-        "."
+        "test"
     ],
     "python.testing.pyTestEnabled": true,
 }
