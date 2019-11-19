@@ -137,7 +137,8 @@ def sh():
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             shell=True,
-            universal_newlines=True
+            universal_newlines=True,
+            cwd=os.getcwd()
         )
         stdout, stderr = p.communicate()
         return ShellExecutionResult(stdout, stderr, p.returncode)

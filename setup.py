@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setup(
     name='ghia_budikpet',
-    version='0.4.4.1',
+    version='0.4.4.2',
     description='GHIA CLI and web app tutorial.',
     long_description=long_description,
     keywords="ghia,budikpet, web, cli",
