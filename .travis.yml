@@ -6,8 +6,8 @@ install:
 - python setup.py install
 - pip install -r docs/requirements.txt
 script:
-- echo "DOCTESTS"; make -C docs doctest
-- echo "TESTS"; python setup.py test
+- make -C docs doctest
+- python setup.py test
 env:
   global:
     - GITHUB_USER=budikpet
