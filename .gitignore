@@ -1,5 +1,5 @@
 # Other
-credentials.cfg
+config/credentials.cfg
 .DS_Store
 
 # Byte-compiled / optimized / DLL files

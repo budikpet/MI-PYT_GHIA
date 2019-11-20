@@ -11,5 +11,5 @@ env:
     - GITHUB_USER=budikpet
     - CTU_USERNAME="budikpet"
     - GHIA_REPO="git@github.com:budikpet/MI-PYT_GHIA.git"
-    - GHIA_BRANCH="master"
+    - GHIA_BRANCH="GHIA_V_Docs"
     - secure: "IcJTQqQtXSbRSCpWvZ4i+d7oKu2cix9HMf4U3TgkpVpmvK57vCekZ8f23hVQGY5THwD7cK/Ik/qNLULlh5PKDmaeOsiM1amqRXexdDwRkbgt0ybzJsU37F4gWUYFH3P3jta5Wxw3gk27nm/G9AG1dwsw+Blty5iP2zXWa09ardvMkgSUvmr15/vgYW+ZuELJgtFH4g+Qog2HTWRnSE6SJQOkCMlV2ioDz+D+p29/Wm88F2Kd09C05nq83XtbHdYA+8HqaooWAqZihMJ13oBRWEp6hQDfKIZ4jPSti4ibZKRHXeVQoJfkrnbTJzfchg5jVEdnLEeUDDUqMzUXY4RY4UnrmTrjD7nYc+36GAPyEN98gHXa7oslyNd3Iih88YKYH8pD/Estz8BGPEuhDxmw+KkVaTr71DPINkKPSdPBrmXqcfC5Xf0CMyO7owd0c36Ae21TEXg9QBYkA2ioj7X9Yq0zFDaAARi7Bbi5ljrEnBJcsxUSx3Tnl5irLxHFZhUJqxajzeZI1pfyIxbEwr/3mjA6fp9145wkP8iXgNsVGxaxSTPaZpxXdsIvaddITkSz6H5oWFwIceTIkfzCR1nVAjLU+eibYnwG9ygSiZavKO+SkUdDHhA0g8Cw5DWLg/ARSC1XYnmqcFnINREYFZkbAuhv+5jYTcKaxg/nfsxKKYM="
