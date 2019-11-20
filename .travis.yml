@@ -4,7 +4,9 @@ python:
 dist: xenial
 install:
 - python setup.py install
+- python -m pip install .[dev]
 script:
+- cd docs && make doctest
 - python setup.py test
 env:
   global:

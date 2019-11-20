@@ -10,7 +10,7 @@ Welcome to MI-PYT_GHIA's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+   introduction
 
 Indices and tables
 ==================

@@ -12,6 +12,9 @@ setup(
     setup_requires=['pytest-runner'],
     install_requires=['Flask', 'click>=6', 'requests'],
     tests_require=['pytest==5.0.1', 'betamax', 'flexmock'],
+    extras_require={
+        'dev':  ["sphinx"]
+    },
     python_requires='>=3.7',
     author='Petr Budík',
     author_email='budikpet@fit.cvut.cz',
