@@ -6,7 +6,7 @@ install:
 - python setup.py install
 - python -m pip install .[dev]
 script:
-- python setup.py test --addopts -v
+- python -m pip freeze
 - cd docs && make doctest
 env:
   global:
