@@ -6,8 +6,8 @@ install:
 - python setup.py install
 - python -m pip install .[dev]
 script:
-- make -C ./docs doctest
 - python setup.py test
+- make -C ./docs doctest
 env:
   global:
     - GITHUB_USER=budikpet
