@@ -6,7 +6,7 @@ install:
 - python setup.py install
 - python -m pip install .[dev]
 script:
-- cd docs && make doctest
+- make -C ./docs doctest
 - python setup.py test
 env:
   global:
