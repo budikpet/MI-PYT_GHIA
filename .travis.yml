@@ -4,11 +4,11 @@ python:
 dist: xenial
 install:
 - python setup.py install
-- python -m pip install .[dev]
+- pip install -r docs/requirements.txt
 script:
-- python setup.py test --addopts -v
+- python setup.py test
 - python -m pip freeze
-- cd docs && make doctest
+- make -C docs doctest
 env:
   global:
     - GITHUB_USER=budikpet
