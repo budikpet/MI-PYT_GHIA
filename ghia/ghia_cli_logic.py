@@ -17,7 +17,8 @@ def get_output_data(context: GhiaContext, issue: Issue, grouped_users: GroupedUs
 	""" 
 		Checks all things that need to be updated and creates data for the outgoing PATCH request. 
 
-		Returns JSON data string.
+		Returns:
+			JSON data string.
 	"""
 
 	data = dict()

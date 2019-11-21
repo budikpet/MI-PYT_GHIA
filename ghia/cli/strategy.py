@@ -22,10 +22,17 @@ class GhiaContext():
 
     def get_user_patterns(self, by_user=False):
         """
-            Returns a dictionary of patterns loaded from the rules config file. Keys of the dictionary are:
-            - locations of the pattern inside the issue
-            - usernames (if by_user is True)
-        """
+        Parses required patterns from rules.cfg.
+        
+        Keyword Arguments:
+            by_user {bool} -- Indicates that the returned dictionary should have usernames as keys. (default: {False})
+
+        Returns:
+            Dictionary of patterns loaded from the rules config file. Keys of the dictionary are:
+                - locations of the pattern inside the issue
+                
+                - usernames (if by_user is True)
+        """                
 
         if by_user:
             return self.config_data.user_patterns_by_user
