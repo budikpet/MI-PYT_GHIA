@@ -10,7 +10,13 @@ MI-PYT_GHIA
 
 Introduction
 -------------
-MI-PYT_GHIA makes it possible to automatically edit issues according to provided rules.
+MI-PYT_GHIA makes it possible to connect to an existing GitHub repository and 
+automatically modify issues according to provided rules. 
+
+These automated modifications include:
+
+- assignment and removal of GitHub users to issues
+- application of a special label to issues for which the programme was not able to find users by the provided rules
 
 It was created as a homework project of naucse.python_. Tested on TravisCI_.
 
@@ -23,6 +29,7 @@ Contents of MI-PYT_GHIA's documentation:
 .. toctree::
    :maxdepth: 2
 
+   getting_started
    tests
 
 Indices and tables
