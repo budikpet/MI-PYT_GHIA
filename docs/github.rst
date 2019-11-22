@@ -16,6 +16,8 @@ It requires these variables to authenticate:
     - used by webhooks to connect to GitHub repository and listen to required events
     - how to set and use GITHUB_SECRET is described `here <https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets>`__
 
+All these variables need to stay secret as they could be misused by third-parties to manipulate the whole users account and/or the repository.
+
 .. _webhooks:
 
 GitHub webhooks

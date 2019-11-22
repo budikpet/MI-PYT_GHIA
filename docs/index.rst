@@ -33,6 +33,11 @@ Contents of MI-PYT_GHIA's documentation:
 	github
 	tests
 
+.. toctree::
+	:maxdepth: 1
+
+	modules/modules
+
 Indices and tables
 ------------------
 
