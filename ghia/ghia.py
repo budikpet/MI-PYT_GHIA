@@ -7,8 +7,17 @@ from ghia.cli.strategy import Strategies, GhiaContext
 from ghia.ghia_cli_logic import ghia_run
 from ghia import ghia_web_logic
 
-def create_app(context: GhiaContext = None, config=None):
-	return ghia_web_logic.create_app(context=context, config=config)
+def create_app(context: GhiaContext = None) -> Flask:
+	"""
+	Create the Flask app.
+	
+	Args:
+		context (GhiaContext, optional): If no context is provided a new default one is automatically created. Defaults to None.
+	
+	Returns:
+		Flask: Newly created Flask application.
+	"""	
+	return ghia_web_logic.create_app(context=context)
 
 inputStrategies = [strategy.name.lower() for strategy in Strategies]
 
@@ -26,5 +35,6 @@ def ghia(strategy, dry_run, config_auth, config_rules, reposlug):
 	
 # This function will be used as a default call
 def main():
+	""" Default call. """	
 	# This way the programme is always called "ghia" in help
 	ghia(prog_name="ghia")	# pylint: disable=no-value-for-parameter,unexpected-keyword-arg
