@@ -29,6 +29,8 @@ These environment variables are required:
 
 MI-PYT_GHIA also requires a few configuration files to run.
 
+.. _credentials_file:
+
 Credentials configuration file
 ________________________________
 
@@ -68,6 +70,21 @@ Check how to use the CLI application using:
     ############ OR ################
 
     $ ghia --help
+
+The application needs :ref:`credentials_file` and :ref:`rules_file`.
+
+If no fallback label is specified, it isn't used.
+
+The application uses strategies to change the way modifications are done. These strategies are:
+
+- Append
+    - users are assigned to an issue if matched by rules
+- Set
+    - users are assigned to an issue if matched by rules
+    - the issue mustn't have any users assigned already
+- Change
+    - users are assigned to an issue if matched by rules
+    - users that shouldn't be assigned by rules are unassigned
 
 Flask web application
 ________________________
