@@ -30,6 +30,7 @@ Contents of MI-PYT_GHIA's documentation:
 	:maxdepth: 2
 
 	getting_started
+	github
 	tests
 
 Indices and tables

@@ -74,34 +74,3 @@ ________________________
 
 Shows HTML web page with basic information about GHIA. It also handles :ref:`webhooks`. 
 The Flask web application requires FLASK_APP and GHIA_CONFIG environment variables described in :ref:`config`.
-
-
-.. _githubSpecific:
-
-GitHub specific information
------------------------------
-
-MI-PYT_GHIA connects to a GitHub repository using GitHub API. 
-It requires these variables to authenticate:
-
-- GITHUB_TOKEN
-    - user account wide
-    - used to authenticate a user against GitHub API
-    - required to modify GitHub repository
-    - how to set and use GITHUB_TOKEN is described `here <https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line>`_
-- GITHUB_SECRET
-    - repository wide
-    - used by webhooks to connect to GitHub repository and listen to required events
-    - how to set and use GITHUB_SECRET is described `here <https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-and-using-encrypted-secrets>`_
-
-.. _webhooks:
-
-GitHub webhooks
-_________________
-
-GitHub webhooks are used by MI-PYT_GHIA flask web app to subscribe to issue-specific events from github repository. 
-These events are used to trigger MI-PYT_GHIA CLI application when any trigger action occures for a specific issue.
-
-All trigger actions are listed in :ref:`rules_file`.
-
-Further information about webhooks, how to set them up and use them is available `here <https://developer.github.com/webhooks/>`_.
