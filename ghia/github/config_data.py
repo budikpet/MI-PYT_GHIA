@@ -1,7 +1,18 @@
 from configparser import ConfigParser
 
 class ConfigData:
-    """ Loads and parses all configuration files. """
+    """ 
+    Loads and parses all configuration files. 
+
+    Args:
+        token (str): GITHUB_TOKEN
+        secret (str): GITHUB_SECRET
+        trigger_actions (List[str]): All issue webhook actions that should trigger the GHIA CLI.
+        fallback_label (str): Fallback label title
+        user_patterns (Dict): Parsed rules where location is the key
+        user_patterns_by_user (Dict): Parsed rules where username is the key
+    
+    """
     
     def __init__(self, config_auth: ConfigParser, config_rules: ConfigParser = None):
         github = config_auth["github"]
@@ -16,7 +27,7 @@ class ConfigData:
             if "other" in config_rules:
                 self.trigger_actions = config_rules["other"].get("trigger_actions").replace(" ", "").split(",")
 
-    def load_rules(self, config_rules):
+    def load_rules(self, config_rules: ConfigParser):
         """ Loads fallback label name and user_patterns dictionary data. """
         
         self.user_patterns = dict()
