@@ -8,7 +8,17 @@ from ghia.ghia_cli_logic import ghia_run
 from ghia.root_index import bp_root
 from ghia.github import util
 
-def get_username(context: GhiaContext):
+def get_username(context: GhiaContext) -> str:
+	"""
+	Get username of the current user using GITHUB_TOKEN.
+	
+	Args:
+		context (GhiaContext): Context to use.
+	
+	Returns:
+		str: Username.
+	"""	
+	
 	session = requests.Session()
 	session.headers = {
 		'User-Agent': 'Python',
@@ -19,7 +29,18 @@ def get_username(context: GhiaContext):
 
 	return r.json()["login"]
 
-def get_context(config_auth, config_rules) -> GhiaContext:
+def get_context(config_auth: str, config_rules: str) -> GhiaContext:
+	"""
+	Constructs GhiaContext from the provided configuration file paths.
+	
+	Args:
+		config_auth (str): Path to the credentials file.
+		config_rules (str): Path to the rules file.
+	
+	Returns:
+		GhiaContext: The newly created GhiaContext.
+	"""	
+
 	context: GhiaContext = None
 	with open(config_auth) as authFile:
 		with open(config_rules) as rulesFile:
@@ -31,7 +52,16 @@ def get_context(config_auth, config_rules) -> GhiaContext:
 
 	return context
 
-def create_app(context: GhiaContext = None, config=None):
+def create_app(context: GhiaContext = None) -> Flask:
+	"""
+	Create the Flask app.
+	
+	Args:
+		context (GhiaContext, optional): If no context is provided a new default one is automatically created. That requires GHIA_CONFIG environment variable. Defaults to None.
+	
+	Returns:
+		Flask: Newly created Flask application.
+	"""	
 	app = Flask(__name__, template_folder="templates")
 
 	if context is None:

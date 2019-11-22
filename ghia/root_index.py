@@ -10,9 +10,23 @@ from ghia.ghia_cli_logic import ghia_run
 bp_root = Blueprint('bp_root', __name__, template_folder='templates')
 
 def get_ghia_context() -> GhiaContext:
+    """
+    
+    Returns:
+        GhiaContext: The context from the apps' config.
+    """    
     return current_app.config["GHIA_CONTEXT"]
 
-def get_color(string):
+def get_color(string: str) -> str:
+    """
+    
+    Args:
+        string (str): Name of a Rule.
+    
+    Returns:
+        str: A string representing a color.
+    """  
+
     try:
         return Rules[string.upper()].value.color
     except KeyError:
@@ -20,21 +34,49 @@ def get_color(string):
 
 @bp_root.app_template_filter('in_block')
 def in_block(string: str):
+    """
+    A filter that creates a badge with an appropriate title and color.
+    
+    Args:
+        string (str): Rule name.
+    
+    Returns:
+        Markup: The Markup for HTML.
+    """    
     color = get_color(string)
     result = f'<span class="badge badge-secondary" style="background-color: {color};">{string}</span>'
     return Markup(result)
 
 @bp_root.app_template_filter('github_url')
 def convert_time(username: str):
+    """
+    Properly sets up the GitHub repository URL.
+    
+    Args:
+        username (str): username string
+    
+    Returns:
+        Markup: The Markup for HTML.
+    """    
     result = f'<a href="https://github.com/{username}">{username}</a>'
 
     return Markup(result)
 
 @bp_root.route('/')
 def index():
+    """ Renders the HTML template. """
     return render_template("index.html", context=get_ghia_context())
 
-def check_secret(context: GhiaContext):
+def check_secret(context: GhiaContext) -> bool:
+    """
+    Checks whether the request is properly authenticated.
+    
+    Args:
+        context (GhiaContext): [description]
+    
+    Returns:
+        bool: True if the request came from GitHub API and is properly authenticated.
+    """    
     headers = request.headers.environ
     payload = request.data
 
@@ -52,7 +94,20 @@ def check_secret(context: GhiaContext):
     return True
 
 @bp_root.route('/', methods=["POST"])
-def labels_hook():
+def labels_hook() -> str:
+    """
+    Handles the labels and ping GitHub webhooks.
+
+    - Gets all event from the GitHub webhook
+    - Checks authentication
+    - Checks event type
+        - if PING event then only returns a positive answer
+        - if ISSUE event that fits trigger_actions then runs GHIA CLI app for the received issue only 
+    
+    Returns:
+        str: String that should be returned as a response.
+    """
+
     current_app.logger.warning('labels_webhook triggered')
     headers = request.headers
     context: GhiaContext = get_ghia_context()
