@@ -53,6 +53,8 @@ Patterns use regex of the 're' library that can be located in specific locations
 .. literalinclude:: _static/cfgs/rules_sample.cfg
 	:language: ini
 
+.. _usage:
+
 How to use
 ------------
 

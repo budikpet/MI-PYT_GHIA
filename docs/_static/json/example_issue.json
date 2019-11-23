@@ -1,0 +1,16 @@
+{
+    "title": "Network",
+    "body": "Python",
+    "html_url": "DummyUrl",
+    "number": -1,
+    "assignees": [
+        {
+            "login": "Person1"
+        }
+    ],
+    "labels": [
+        {
+            "name": "SomeLabel"
+        }
+    ]
+}
