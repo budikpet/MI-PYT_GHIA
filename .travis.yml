@@ -2,14 +2,27 @@ language: python
 python:
 - '3.7'
 dist: xenial
+before_install:
+- >-
+  openssl aes-256-cbc 
+  -K $encrypted_4479ed0a0147_key 
+  -iv $encrypted_4479ed0a0147_iv 
+  -in github_deploy_key.enc 
+  -out github_deploy_key 
+  -d
+- chmod 600 github_deploy_key
+- eval $(ssh-agent -s)
+- ssh-add github_deploy_key
 install:
 - python setup.py install
+- python -m pip install .[dev]
 script:
+- make -C docs doctest
 - python setup.py test
 env:
   global:
     - GITHUB_USER=budikpet
     - CTU_USERNAME="budikpet"
     - GHIA_REPO="git@github.com:budikpet/MI-PYT_GHIA.git"
-    - GHIA_BRANCH="master"
-    - secure: "IcJTQqQtXSbRSCpWvZ4i+d7oKu2cix9HMf4U3TgkpVpmvK57vCekZ8f23hVQGY5THwD7cK/Ik/qNLULlh5PKDmaeOsiM1amqRXexdDwRkbgt0ybzJsU37F4gWUYFH3P3jta5Wxw3gk27nm/G9AG1dwsw+Blty5iP2zXWa09ardvMkgSUvmr15/vgYW+ZuELJgtFH4g+Qog2HTWRnSE6SJQOkCMlV2ioDz+D+p29/Wm88F2Kd09C05nq83XtbHdYA+8HqaooWAqZihMJ13oBRWEp6hQDfKIZ4jPSti4ibZKRHXeVQoJfkrnbTJzfchg5jVEdnLEeUDDUqMzUXY4RY4UnrmTrjD7nYc+36GAPyEN98gHXa7oslyNd3Iih88YKYH8pD/Estz8BGPEuhDxmw+KkVaTr71DPINkKPSdPBrmXqcfC5Xf0CMyO7owd0c36Ae21TEXg9QBYkA2ioj7X9Yq0zFDaAARi7Bbi5ljrEnBJcsxUSx3Tnl5irLxHFZhUJqxajzeZI1pfyIxbEwr/3mjA6fp9145wkP8iXgNsVGxaxSTPaZpxXdsIvaddITkSz6H5oWFwIceTIkfzCR1nVAjLU+eibYnwG9ygSiZavKO+SkUdDHhA0g8Cw5DWLg/ARSC1XYnmqcFnINREYFZkbAuhv+5jYTcKaxg/nfsxKKYM="
+    - GHIA_BRANCH="GHIA_V_Docs"
+    - secure: "G/4BQ0rqCtU3Nl1Wcg7VwyzXRfLRc8G7fmtrQYUYlFWr+w1AQsk+5tr/IxaZlvZij8IJRg3PvZhTjoPGJmGwYlZz45aqBLqsfyuPkhMFQbGeydxI/WFHwMy/cwNJmekMQoO9s8rwG2PAogj/XnrXu33KWNeSKxKQSMs/DoUrinXigZ66Rnm/PVgE8TkqrLTiC2dXBx/y+yAKOR77SqBtgD+UMDhnTLBvafRQUZ0U+dyANs1eXD3FBIhaNLUYDUAzPMwd85CuX7gc32affhRlzP0pQtwefuEgUGI8j+VleqBSGs1Jb+wRyHIFIx+zqyelQXNaf9jlzbisTw+qD1kTvCmXLOgjwKryYISLolZIiyvCQ4PeEVRbJFhmrqL8Ozv6JAUTzuaJjK7UTKmmeLiBak5yYh9FFr3ieGdamp6l6WyRP0aXrasw6LH6b0GxsV2yQdU9ci38P1y79mSeN+BU8RbIF7aBi6qGJ4pXNHGPqOVZHCdPBq8MIb8LEr7KBBxZ1j4IUYbbByxDVWNMeE9scQmj7LyQWdggJoLSVum9ZNPpluFeMglfCDzVfUSxiki8aDKa7p5kQTTo7mDepyYAO2ZewMNtf2uw7NjboUVQj8Q1mEN6gSIN1lknsQZp/6pgKOr/jqNSdo2X4rfZrFR/VkWJEL3V7Ms+jJCLfNB/ogg="

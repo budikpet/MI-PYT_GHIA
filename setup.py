@@ -1,17 +1,20 @@
 from setuptools import setup, find_packages
 
-with open('README.md') as f:
+with open('README.rst') as f:
     long_description = ''.join(f.readlines())
 
 setup(
     name='ghia_budikpet',
-    version='0.4.5',
+    version='0.5.0.1',
     description='GHIA CLI and web app tutorial.',
     long_description=long_description,
     keywords="ghia,budikpet, web, cli",
     setup_requires=['pytest-runner'],
     install_requires=['Flask', 'click>=6', 'requests'],
     tests_require=['pytest==5.0.1', 'betamax', 'flexmock'],
+    extras_require={
+        'dev':  ["sphinx"]
+    },
     python_requires='>=3.7',
     author='Petr Budík',
     author_email='budikpet@fit.cvut.cz',

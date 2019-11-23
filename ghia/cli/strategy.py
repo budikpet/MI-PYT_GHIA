@@ -6,7 +6,18 @@ import click
 from typing import Set, List
 
 class GhiaContext():
-    """ Holds all data that are important during the entire execution of the GHIA programme. """
+    """ 
+    Holds all data that are important during the entire execution of the GHIA programme.
+
+    Args:
+        base (str): Base URL.
+        strategy_name (Strategies): Name of the strategy that is to be used.
+        strategy (GhiaStrategy): A GhiaStrategy object that is used.
+        dry_run (bool): If true then modifications aren't pushed online. They are only shown in the output.
+        reposlug (str): The owner/repository reposlug.
+        username (str): Name of the user received using the GITHUB_TOKEN.
+        session (requests.session): The session used during the whole GHIA CLI run.
+    """
 
     def __init__(self, base: str, strategy: str, dry_run: bool, config_auth, config_rules, reposlug: str = None, session = None):
         self.base: str = base
@@ -22,9 +33,15 @@ class GhiaContext():
 
     def get_user_patterns(self, by_user=False):
         """
-            Returns a dictionary of patterns loaded from the rules config file. Keys of the dictionary are:
-            - locations of the pattern inside the issue
-            - usernames (if by_user is True)
+        
+        Args:
+            by_user (bool, optional): Indicates that the returned dictionary should have usernames as keys.. Defaults to False.
+        
+        Returns:
+            Dict: Dictionary of patterns loaded from the rules config file. Keys of the dictionary are:
+                
+                - locations of the pattern inside the issue
+                - usernames (if by_user is True)
         """
 
         if by_user:
