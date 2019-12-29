@@ -12,6 +12,8 @@ setup(
     setup_requires=['pytest-runner'],
     install_requires=['Flask', 'click>=6', 'requests'],
     tests_require=['pytest==5.0.1', 'betamax', 'flexmock'],
+    
+    # Can then by installed by 'pip install .[dev]'
     extras_require={
         'dev':  ["sphinx"]
     },
